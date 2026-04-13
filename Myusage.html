@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>내 이용 현황</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
+      background: #f5f5f5;
+      color: #111;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      background: #fff;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .page-header h2 { font-size: 20px; font-weight: 500; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .timetable-btn {
+      padding: 6px 14px;
+      border: 1.5px solid #111;
+      border-radius: 6px;
+      background: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .back-btn {
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    /* 예약 카드 */
+    .content { padding: 16px; }
+
+    .reservation-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1.5px solid #ddd;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+    }
+    .card-info { flex: 1; }
+    .card-name {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .card-status {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .card-time {
+      font-size: 14px;
+      color: #555;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1.5px solid;
+    }
+    .status-badge.available { background: #e6f4ea; border-color: #2e7d32; color: #2e7d32; }
+    .status-badge.inuse { background: #fffde7; border-color: #f57f17; color: #f57f17; }
+
+    /* 세탁기/건조기 SVG */
+    .machine-icon { width: 70px; height: 70px; flex-shrink: 0; }
+
+    .card-bottom {
+      display: flex;
+      border-top: 1px solid #eee;
+    }
+    .card-btn {
+      flex: 1;
+      padding: 12px;
+      background: #fff;
+      border: none;
+      font-size: 15px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .card-btn:active { background: #f5f5f5; }
+    .card-btn + .card-btn {
+      border-left: 1px solid #eee;
+    }
+    .card-btn.cancel { color: #c62828; }
+
+    /* 빈 상태 */
+    .empty-box {
+      background: #fff;
+      border-radius: 12px;
+      border: 1.5px solid #ddd;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      color: #aaa;
+    }
+
+    /* 하단 버튼 */
+    .bottom-area {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 16px;
+      background: #f5f5f5;
+    }
+    .bottom-btn {
+      width: 100%;
+      padding: 14px;
+      border: 1.5px solid #111;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .bottom-btn:active { background: #f0f0f0; }
+
+    /* 모달 */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 24px;
+      width: 85%;
+      text-align: center;
+    }
+    .modal h3 { font-size: 18px; font-weight: 500; margin-bottom: 10px; }
+    .modal p { font-size: 14px; color: #888; margin-bottom: 24px; }
+    .modal-btns { display: flex; gap: 10px; }
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border: 1.5px solid #111;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .modal-btn.confirm { background: #111; color: #fff; }
+    .modal-btn:active { opacity: 0.8; }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <h2>내 이용 현황</h2>
+    <div class="header-right">
+      <button class="timetable-btn">시간표</button>
+      <button class="back-btn" onclick="location.href='IDP.html'">←</button>
+    </div>
+  </div>
+
+  <div class="content" id="content">
+
+    <!-- 예약 있음 상태 (기본 표시) -->
+    <div id="reservation-list">
+
+      <!-- 세탁기 카드 -->
+      <div class="reservation-card" id="card-washer">
+        <div class="card-top">
+          <div class="card-info">
+            <div class="card-name">3번 세탁기</div>
+            <div class="card-status">상태: <span class="status-badge available">사용 가능</span></div>
+            <div class="card-time">예상 잔여 시간: 8분</div>
+          </div>
+          <!-- 세탁기 아이콘 SVG -->
+          <svg class="machine-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="8" width="84" height="84" rx="6" stroke="#333" stroke-width="3" fill="#fff"/>
+            <circle cx="50" cy="52" r="26" stroke="#333" stroke-width="2.5"/>
+            <circle cx="50" cy="52" r="20" stroke="#333" stroke-width="2"/>
+            <clipPath id="wclip">
+              <circle cx="50" cy="52" r="20"/>
+            </clipPath>
+            <rect x="30" y="58" width="40" height="14" fill="#cce8ff" clip-path="url(#wclip)"/>
+            <path d="M30 60 Q40 54 50 60 Q60 66 70 60" stroke="#6ab4f5" stroke-width="2" fill="none" clip-path="url(#wclip)"/>
+            <rect x="28" y="80" width="22" height="6" rx="3" stroke="#333" stroke-width="2" fill="#fff"/>
+            <circle cx="22" cy="22" r="4" stroke="#333" stroke-width="2" fill="#fff"/>
+          </svg>
+        </div>
+        <div class="card-bottom">
+          <button class="card-btn" onclick="openStatusModal()">예약 현황</button>
+          <button class="card-btn cancel" onclick="openCancelModal('card-washer')">예약 취소</button>
+        </div>
+      </div>
+
+      <!-- 건조기 카드 -->
+      <div class="reservation-card" id="card-dryer">
+        <div class="card-top">
+          <div class="card-info">
+            <div class="card-name">1번 건조기</div>
+            <div class="card-status">상태: <span class="status-badge inuse">사용 중</span></div>
+            <div class="card-time">예상 잔여 시간: 8분</div>
+          </div>
+          <!-- 건조기 아이콘 SVG -->
+          <svg class="machine-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="8" width="84" height="84" rx="6" stroke="#333" stroke-width="3" fill="#fff"/>
+            <circle cx="50" cy="52" r="26" stroke="#333" stroke-width="2.5"/>
+            <circle cx="50" cy="52" r="20" stroke="#333" stroke-width="2"/>
+            <clipPath id="dclip2">
+              <circle cx="50" cy="52" r="19"/>
+            </clipPath>
+            <!-- 바람 라인들 -->
+            <g clip-path="url(#dclip2)">
+              <path d="M34 46 Q40 40 48 46 Q54 52 62 44" stroke="#6ab4f5" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+              <path d="M34 52 Q42 44 50 50 Q58 56 66 48" stroke="#6ab4f5" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+              <path d="M34 58 Q42 50 50 56 Q58 62 66 54" stroke="#6ab4f5" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+              <path d="M36 64 Q44 56 52 62 Q60 68 67 61" stroke="#6ab4f5" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            </g>
+            <rect x="28" y="80" width="22" height="6" rx="3" stroke="#333" stroke-width="2" fill="#fff"/>
+            <circle cx="22" cy="22" r="4" stroke="#333" stroke-width="2" fill="#fff"/>
+          </svg>
+        </div>
+        <div class="card-bottom">
+          <button class="card-btn" onclick="openStatusModal()">예약 현황</button>
+          <button class="card-btn cancel" onclick="openCancelModal('card-dryer')">예약 취소</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 예약 없음 상태 (숨김) -->
+    <div class="empty-box" id="empty-box" style="display:none;">
+      예약한 기기가 없습니다.
+    </div>
+
+  </div>
+
+  <div class="bottom-area">
+    <button class="bottom-btn" onclick="location.href='laundry.html'">세탁실 현황</button>
+  </div>
+
+  <!-- 예약 현황 모달 -->
+  <div class="modal-overlay" id="status-modal" onclick="closeModalOutside(event, 'status-modal')">
+    <div class="modal">
+      <h3>예약 현황</h3>
+      <p>해당 기능은 추후 연결 예정입니다.</p>
+      <div class="modal-btns">
+        <button class="modal-btn confirm" onclick="closeModal('status-modal')">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 예약 취소 확인 모달 -->
+  <div class="modal-overlay" id="cancel-modal" onclick="closeModalOutside(event, 'cancel-modal')">
+    <div class="modal">
+      <h3>예약 취소</h3>
+      <p>예약을 취소하시겠습니까?</p>
+      <div class="modal-btns">
+        <button class="modal-btn" onclick="closeModal('cancel-modal')">돌아가기</button>
+        <button class="modal-btn confirm" onclick="confirmCancel()">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let cancelTargetId = null;
+
+    function openStatusModal() {
+      document.getElementById('status-modal').classList.add('show');
+    }
+
+    function openCancelModal(cardId) {
+      cancelTargetId = cardId;
+      document.getElementById('cancel-modal').classList.add('show');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    function closeModalOutside(e, id) {
+      if (e.target === document.getElementById(id)) closeModal(id);
+    }
+
+    function confirmCancel() {
+      closeModal('cancel-modal');
+      if (cancelTargetId) {
+        document.getElementById(cancelTargetId).remove();
+        cancelTargetId = null;
+      }
+      // 카드가 모두 없어지면 빈 상태 표시
+      const list = document.getElementById('reservation-list');
+      if (list.querySelectorAll('.reservation-card').length === 0) {
+        list.style.display = 'none';
+        document.getElementById('empty-box').style.display = 'flex';
+      }
+    }
+  </script>
+</body>
+</html>

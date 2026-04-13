@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>세탁실 이용 현황</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
+      background: #f5f5f5;
+      color: #111;
+    }
+
+    .page-header {
+      background: #fff;
+      padding: 20px 24px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .page-header h2 {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    .tabs {
+      display: flex;
+    }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 16px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      color: #aaa;
+    }
+    .tab.active {
+      color: #3182ce;
+      border-bottom: 2px solid #3182ce;
+      font-weight: 500;
+    }
+
+    /* 미니맵 */
+    .minimap-wrap {
+      padding: 20px 24px;
+    }
+    .minimap {
+      background: #fff;
+      border-radius: 12px;
+      border: 1.5px solid #ddd;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* 미니맵 레이아웃 */
+    .map-layout {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .map-left {
+      display: flex;
+      flex-direction: column;
+      gap: 100px;
+      flex: 1;
+    }
+    .map-top-row {
+      display: flex;
+      gap: 4px;
+    }
+    .map-bottom-row {
+      display: flex;
+      gap: 4px;
+    }
+    .map-right {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* 박스 공통 */
+    .map-box {
+      width: 9vw;
+      height: 9vw;
+      border-radius: 6px;
+      border: 1.5px solid #ccc;
+      background: #f0f0f0;
+      flex-shrink: 0;
+    }
+
+    /* 활성 기기 박스 */
+    .machine-box {
+      width: 9vw;
+      height: 9vw;
+      border-radius: 6px;
+      border: 2px solid;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.1s;
+    }
+    .machine-box:active { transform: scale(0.93); }
+    .machine-box.available {
+      background: #e6f4ea;
+      border-color: #2e7d32;
+      color: #2e7d32;
+    }
+    .machine-box.inuse {
+      background: #fffde7;
+      border-color: #f57f17;
+      color: #f57f17;
+    }
+    .machine-box.broken {
+      background: #ffebee;
+      border-color: #c62828;
+      color: #c62828;
+    }
+
+    /* 범례 */
+    .legend {
+      display: flex;
+      gap: 14px;
+      padding: 0 24px 16px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #555;
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      border: 1.5px solid;
+    }
+    .legend-dot.available { background: #e6f4ea; border-color: #2e7d32; }
+    .legend-dot.inuse { background: #fffde7; border-color: #f57f17; }
+    .legend-dot.broken { background: #ffebee; border-color: #c62828; }
+
+    /* 팝업 */
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .popup-overlay.show { display: flex; }
+    .popup {
+      background: #fff;
+      width: 100%;
+      border-radius: 16px 16px 0 0;
+      padding: 24px;
+      position: relative;
+    }
+    .popup-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: #eee;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .popup-title {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .popup-status {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .popup-status.available { background: #e6f4ea; color: #2e7d32; }
+    .popup-status.inuse { background: #fffde7; color: #f57f17; }
+    .popup-status.broken { background: #ffebee; color: #c62828; }
+    .popup-time {
+      font-size: 15px;
+      color: #555;
+      margin-bottom: 24px;
+    }
+    .popup-btn {
+      width: 100%;
+      padding: 14px;
+      background: #fff;
+      border: 1.5px solid #111;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .popup-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+    .popup-btn:not(:disabled):active { background: #f0f0f0; }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <button onclick="location.href='IDP.html'" style="background:none; border:none; font-size:22px; cursor:pointer; margin-bottom:8px; float:right;">←</button>
+    <h2>세탁실 이용 현황</h2>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('washer', this)">세탁기</div>
+      <div class="tab" onclick="switchTab('dryer', this)">건조기</div>
+    </div>
+  </div>
+
+  <!-- 세탁기 탭 -->
+  <div id="tab-washer">
+    <div class="minimap-wrap">
+      <div class="minimap">
+        <div class="map-layout">
+          <div class="map-left">
+            <!-- 위쪽 7개 (5,6,7번째가 활성 기기) -->
+            <div class="map-top-row">
+              <div class="map-box"></div>
+              <div class="map-box"></div>
+              <div class="map-box"></div>
+              <div class="map-box"></div>
+              <div class="machine-box available" onclick="openPopup('1번 세탁기', 'available', '사용 가능', null)">1</div>
+              <div class="machine-box inuse"     onclick="openPopup('2번 세탁기', 'inuse', '사용 중', 12)">2</div>
+              <div class="machine-box broken"    onclick="openPopup('3번 세탁기', 'broken', '사용 불가', null)">3</div>
+            </div>
+            <!-- 아래쪽 2개 -->
+            <div class="map-bottom-row">
+              <div class="map-box"></div>
+              <div class="map-box"></div>
+            </div>
+          </div>
+          <!-- 우측 5개 -->
+          <div class="map-right">
+            <div class="map-box"></div>
+            <div class="map-box"></div>
+            <div class="map-box"></div>
+            <div class="map-box"></div>
+            <div class="map-box"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot available"></div>사용 가능</div>
+      <div class="legend-item"><div class="legend-dot inuse"></div>사용 중</div>
+      <div class="legend-item"><div class="legend-dot broken"></div>사용 불가</div>
+    </div>
+  </div>
+
+  <!-- 건조기 탭 -->
+  <div id="tab-dryer" class="hidden">
+    <div class="minimap-wrap">
+      <div class="minimap">
+        <div class="map-layout">
+          <div class="map-left">
+            <div class="map-top-row">
+              <div class="map-box"></div>
+              <div class="map-box"></div>
+              <div class="map-box"></div>
+              <div class="map-box"></div>
+              <div class="machine-box available" onclick="openPopup('1번 건조기', 'available', '사용 가능', null)">1</div>
+              <div class="machine-box available" onclick="openPopup('2번 건조기', 'available', '사용 가능', null)">2</div>
+              <div class="machine-box inuse"     onclick="openPopup('3번 건조기', 'inuse', '사용 중', 30)">3</div>
+            </div>
+            <div class="map-bottom-row">
+              <div class="map-box"></div>
+              <div class="map-box"></div>
+            </div>
+          </div>
+          <div class="map-right">
+            <div class="map-box"></div>
+            <div class="map-box"></div>
+            <div class="map-box"></div>
+            <div class="map-box"></div>
+            <div class="map-box"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot available"></div>사용 가능</div>
+      <div class="legend-item"><div class="legend-dot inuse"></div>사용 중</div>
+      <div class="legend-item"><div class="legend-dot broken"></div>사용 불가</div>
+    </div>
+  </div>
+
+  <!-- 팝업 -->
+  <div class="popup-overlay" id="popup-overlay" onclick="closePopupOutside(event)">
+    <div class="popup">
+      <button class="popup-close" onclick="closePopup()">✕</button>
+      <div class="popup-title" id="popup-title"></div>
+      <div class="popup-status" id="popup-status"></div>
+      <div class="popup-time" id="popup-time"></div>
+      <button class="popup-btn" id="popup-btn" onclick="reserve()">예약하기</button>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tab, el) {
+      document.getElementById('tab-washer').classList.add('hidden');
+      document.getElementById('tab-dryer').classList.add('hidden');
+      document.getElementById('tab-' + tab).classList.remove('hidden');
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function openPopup(name, statusClass, statusText, remainMin) {
+      document.getElementById('popup-title').textContent = name;
+      const statusEl = document.getElementById('popup-status');
+      statusEl.textContent = statusText;
+      statusEl.className = 'popup-status ' + statusClass;
+      document.getElementById('popup-time').textContent = remainMin ? '예상 잔여 시간: ' + remainMin + '분' : '예상 잔여 시간: -';
+      const btn = document.getElementById('popup-btn');
+      btn.disabled = statusClass !== 'available';
+      document.getElementById('popup-overlay').classList.add('show');
+    }
+
+    function closePopup() {
+      document.getElementById('popup-overlay').classList.remove('show');
+    }
+
+    function closePopupOutside(e) {
+      if (e.target === document.getElementById('popup-overlay')) closePopup();
+    }
+
+    function reserve() {
+      alert('예약 기능은 추후 연결 예정입니다.');
+      closePopup();
+    }
+  </script>
+  <div style="padding: 16px;">
+  <button style="width:100%; padding:14px; border:1.5px solid #111; border-radius:8px; background:#fff; font-size:16px; cursor:pointer;" onclick="location.href='myusage.html'">내 이용 현황</button>
+</div>
+</body>
+</html>
