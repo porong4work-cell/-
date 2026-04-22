@@ -31,6 +31,15 @@
       font-size: 14px;
       cursor: pointer;
     }
+    .upload-btn {
+      padding: 6px 14px;
+      border: 1.5px solid #3182ce;
+      border-radius: 6px;
+      background: #fff;
+      font-size: 14px;
+      color: #3182ce;
+      cursor: pointer;
+    }
     .home-btn {
       background: none;
       border: none;
@@ -63,25 +72,71 @@
       gap: 8px;
       margin-bottom: 10px;
     }
-    .meal-title {
-      font-size: 20px;
-      font-weight: 500;
-    }
-    .meal-time {
-      font-size: 14px;
-      color: #888;
-      margin-left: auto;
-    }
-    .meal-items {
-      font-size: 15px;
-      color: #444;
-      line-height: 1.8;
-    }
+    .meal-title { font-size: 20px; font-weight: 500; }
+    .meal-time { font-size: 14px; color: #888; margin-left: auto; }
+    .meal-items { font-size: 15px; color: #444; line-height: 1.8; }
 
-    /* 식사별 색상 */
     .breakfast .meal-title { color: #e53935; }
     .lunch .meal-title { color: #f57f17; }
     .dinner .meal-title { color: #1565c0; }
+
+    /* 모달 */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 24px;
+      width: 88%;
+    }
+    .modal h3 { font-size: 18px; font-weight: 500; margin-bottom: 8px; }
+    .modal p { font-size: 13px; color: #888; margin-bottom: 20px; }
+
+    /* 업로드 영역 */
+    .upload-area {
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      padding: 32px 16px;
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: border-color 0.2s;
+    }
+    .upload-area:active { border-color: #3182ce; }
+    .upload-area.has-image { border-color: #2e7d32; padding: 8px; }
+    .upload-icon { font-size: 36px; margin-bottom: 8px; }
+    .upload-text { font-size: 14px; color: #888; }
+    .upload-area img {
+      width: 100%;
+      border-radius: 8px;
+      display: none;
+    }
+    .upload-area.has-image img { display: block; }
+    .upload-area.has-image .upload-icon,
+    .upload-area.has-image .upload-text { display: none; }
+
+    .modal-btns { display: flex; gap: 10px; }
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border: 1.5px solid #111;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .modal-btn.confirm { background: #111; color: #fff; }
+    .modal-btn.confirm:disabled { opacity: 0.35; cursor: not-allowed; }
+    .modal-btn:active { opacity: 0.8; }
   </style>
 </head>
 <body>
@@ -89,6 +144,7 @@
   <div class="page-header">
     <h2>메뉴 추천</h2>
     <div class="header-right">
+      <button class="upload-btn" onclick="openUploadModal()">메뉴 업로드</button>
       <button class="timetable-btn" onclick="location.href='timetable.html'">시간표</button>
       <button class="home-btn" onclick="location.href='index.html'">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -102,14 +158,32 @@
 
   <div class="content" id="meal-content"></div>
 
+  <!-- 업로드 모달 -->
+  <div class="modal-overlay" id="upload-modal" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <h3>주간 메뉴 업로드</h3>
+      <p>메뉴 이미지를 업로드하면 자동으로 식단이 분석됩니다. (추후 연결 예정)</p>
+      <div class="upload-area" id="upload-area" onclick="triggerFileInput()">
+        <div class="upload-icon">📷</div>
+        <div class="upload-text">이미지를 탭하여 업로드</div>
+        <img id="preview-img" src="" alt="미리보기" />
+      </div>
+      <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleFile(event)" />
+      <div class="modal-btns">
+        <button class="modal-btn" onclick="closeModal()">취소</button>
+        <button class="modal-btn confirm" id="confirm-btn" disabled onclick="confirmUpload()">업로드</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // 오늘 날짜 표시
+    // 날짜 표시
     const days = ['일', '월', '화', '수', '목', '금', '토'];
     const today = new Date();
     const dateStr = (today.getMonth() + 1) + '월 ' + today.getDate() + '일 ' + days[today.getDay()] + '요일';
     document.getElementById('date-bar').textContent = dateStr;
 
-    // 임시 메뉴 데이터 (나중에 서버 연결 예정)
+    // 임시 메뉴 데이터
     const meals = [
       {
         type: 'breakfast',
@@ -134,20 +208,14 @@
       }
     ];
 
-    // 현재 시간 기준으로 순서 정렬
     const hour = today.getHours();
     let order;
-    if (hour < 9) {
-      order = ['breakfast', 'lunch', 'dinner'];
-    } else if (hour < 13) {
-      order = ['lunch', 'dinner', 'breakfast'];
-    } else {
-      order = ['dinner', 'breakfast', 'lunch'];
-    }
+    if (hour < 9) order = ['breakfast', 'lunch', 'dinner'];
+    else if (hour < 13) order = ['lunch', 'dinner', 'breakfast'];
+    else order = ['dinner', 'breakfast', 'lunch'];
 
     const sorted = order.map(t => meals.find(m => m.type === t));
     const container = document.getElementById('meal-content');
-
     sorted.forEach(meal => {
       const card = document.createElement('div');
       card.className = 'meal-card ' + meal.type;
@@ -160,6 +228,45 @@
       `;
       container.appendChild(card);
     });
+
+    // 업로드 모달
+    function openUploadModal() {
+      document.getElementById('upload-modal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('upload-modal').classList.remove('show');
+      // 초기화
+      document.getElementById('upload-area').classList.remove('has-image');
+      document.getElementById('preview-img').src = '';
+      document.getElementById('file-input').value = '';
+      document.getElementById('confirm-btn').disabled = true;
+    }
+
+    function closeModalOutside(e) {
+      if (e.target === document.getElementById('upload-modal')) closeModal();
+    }
+
+    function triggerFileInput() {
+      document.getElementById('file-input').click();
+    }
+
+    function handleFile(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        document.getElementById('preview-img').src = ev.target.result;
+        document.getElementById('upload-area').classList.add('has-image');
+        document.getElementById('confirm-btn').disabled = false;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function confirmUpload() {
+      alert('업로드 완료! 메뉴 자동 분석 기능은 추후 연결 예정입니다.');
+      closeModal();
+    }
   </script>
 </body>
 </html>
