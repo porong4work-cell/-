@@ -11,22 +11,17 @@
       background: #f5f5f5;
       color: #111;
     }
-
     .page-header {
       background: #fff;
       padding: 20px 24px 0;
       border-bottom: 1px solid #eee;
-      justify-content: space-between;
     }
     .page-header h2 {
       font-size: 20px;
       font-weight: 500;
       margin-bottom: 16px;
     }
-
-    .tabs {
-      display: flex;
-    }
+    .tabs { display: flex; }
     .tab {
       flex: 1;
       text-align: center;
@@ -41,22 +36,13 @@
       border-bottom: 2px solid #3182ce;
       font-weight: 500;
     }
-
-    /* 미니맵 */
-    .minimap-wrap {
-      padding: 20px 24px;
-    }
+    .minimap-wrap { padding: 20px 24px; }
     .minimap {
       background: #fff;
       border-radius: 12px;
       border: 1.5px solid #ddd;
       padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
     }
-
-    /* 미니맵 레이아웃 */
     .map-layout {
       display: flex;
       gap: 12px;
@@ -68,31 +54,13 @@
       gap: 100px;
       flex: 1;
     }
-    .map-top-row {
-      display: flex;
-      gap: 4px;
-    }
-    .map-bottom-row {
-      display: flex;
-      gap: 4px;
-    }
+    .map-top-row { display: flex; gap: 4px; }
+    .map-bottom-row { display: flex; gap: 4px; }
     .map-right {
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
-
-    /* 박스 공통 */
-    .map-box {
-      width: 9vw;
-      height: 9vw;
-      border-radius: 6px;
-      border: 1.5px solid #ccc;
-      background: #f0f0f0;
-      flex-shrink: 0;
-    }
-
-    /* 활성 기기 박스 */
     .machine-box {
       width: 9vw;
       height: 9vw;
@@ -102,30 +70,16 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 600;
       flex-shrink: 0;
       -webkit-tap-highlight-color: transparent;
       transition: transform 0.1s;
     }
     .machine-box:active { transform: scale(0.93); }
-    .machine-box.available {
-      background: #e6f4ea;
-      border-color: #2e7d32;
-      color: #2e7d32;
-    }
-    .machine-box.inuse {
-      background: #fffde7;
-      border-color: #f57f17;
-      color: #f57f17;
-    }
-    .machine-box.broken {
-      background: #ffebee;
-      border-color: #c62828;
-      color: #c62828;
-    }
-
-    /* 범례 */
+    .machine-box.available { background: #e6f4ea; border-color: #2e7d32; color: #2e7d32; }
+    .machine-box.inuse { background: #fffde7; border-color: #f57f17; color: #f57f17; }
+    .machine-box.broken { background: #ffebee; border-color: #c62828; color: #c62828; }
     .legend {
       display: flex;
       gap: 14px;
@@ -148,8 +102,6 @@
     .legend-dot.available { background: #e6f4ea; border-color: #2e7d32; }
     .legend-dot.inuse { background: #fffde7; border-color: #f57f17; }
     .legend-dot.broken { background: #ffebee; border-color: #c62828; }
-
-    /* 팝업 */
     .popup-overlay {
       display: none;
       position: fixed;
@@ -178,11 +130,7 @@
       cursor: pointer;
       font-size: 14px;
     }
-    .popup-title {
-      font-size: 20px;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
+    .popup-title { font-size: 20px; font-weight: 500; margin-bottom: 8px; }
     .popup-status {
       display: inline-block;
       font-size: 14px;
@@ -194,11 +142,7 @@
     .popup-status.available { background: #e6f4ea; color: #2e7d32; }
     .popup-status.inuse { background: #fffde7; color: #f57f17; }
     .popup-status.broken { background: #ffebee; color: #c62828; }
-    .popup-time {
-      font-size: 15px;
-      color: #555;
-      margin-bottom: 24px;
-    }
+    .popup-time { font-size: 15px; color: #555; margin-bottom: 24px; }
     .popup-btn {
       width: 100%;
       padding: 14px;
@@ -208,31 +152,38 @@
       font-size: 16px;
       cursor: pointer;
     }
-    .popup-btn:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
-    }
+    .popup-btn:disabled { opacity: 0.35; cursor: not-allowed; }
     .popup-btn:not(:disabled):active { background: #f0f0f0; }
-
     .hidden { display: none; }
+    .bottom-area { padding: 16px; }
+    .bottom-btn {
+      width: 100%;
+      padding: 14px;
+      border: 1.5px solid #111;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .bottom-btn:active { background: #f0f0f0; }
   </style>
 </head>
 <body>
 
-<div class="page-header">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-    <h2>세탁실 이용 현황</h2>
-    <button onclick="location.href='index.html'" style="background:none; border:none; cursor:pointer;">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H15v-5h-6v5H4a1 1 0 0 1-1-1V9.5z"/>
-      </svg>
-    </button>
+  <div class="page-header">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h2>세탁실 이용 현황</h2>
+      <button onclick="location.href='index.html'" style="background:none; border:none; cursor:pointer;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H15v-5h-6v5H4a1 1 0 0 1-1-1V9.5z"/>
+        </svg>
+      </button>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('washer', this)">세탁기</div>
+      <div class="tab" onclick="switchTab('dryer', this)">건조기</div>
+    </div>
   </div>
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab('washer', this)">세탁기</div>
-    <div class="tab" onclick="switchTab('dryer', this)">건조기</div>
-  </div>
-</div>
 
   <!-- 세탁기 탭 -->
   <div id="tab-washer">
@@ -240,28 +191,30 @@
       <div class="minimap">
         <div class="map-layout">
           <div class="map-left">
-            <!-- 위쪽 7개 -->
             <div class="map-top-row">
-  		<div class="machine-box available" onclick="openPopup('1번 세탁기', 'available', '사용 가능', null)">1</div>
-  		<div class="machine-box inuse" onclick="openPopup('2번 세탁기', 'inuse', '사용 중', 15)">2</div>
-  		<div class="machine-box available" onclick="openPopup('3번 세탁기', 'available', '사용 가능', null)">3</div>
-  		<div class="machine-box broken" onclick="openPopup('4번 세탁기', 'broken', '사용 불가', null)">4</div>
-  		<div class="machine-box available" onclick="openPopup('5번 세탁기', 'available', '사용 가능', null)">5</div>
-  		<div class="machine-box inuse" onclick="openPopup('6번 세탁기', 'inuse', '사용 중', 8)">6</div>
-  		<div class="machine-box available" onclick="openPopup('7번 세탁기', 'available', '사용 가능', null)">7</div>
-</div>
-<div class="map-bottom-row">
-  <div class="machine-box available" onclick="openPopup('13번 세탁기', 'available', '사용 가능', null)">13</div>
-  <div class="machine-box inuse" onclick="openPopup('14번 세탁기', 'inuse', '사용 중', 5)">14</div>
-</div>
-     <!-- 우측 5개 -->
+              <div class="machine-box available" onclick="openPopup('1번 세탁기', 'available', '사용 가능', null)">1</div>
+              <div class="machine-box inuse" onclick="openPopup('2번 세탁기', 'inuse', '사용 중', 15)">2</div>
+              <div class="machine-box available" onclick="openPopup('3번 세탁기', 'available', '사용 가능', null)">3</div>
+              <div class="machine-box broken" onclick="openPopup('4번 세탁기', 'broken', '사용 불가', null)">4</div>
+              <div class="machine-box available" onclick="openPopup('5번 세탁기', 'available', '사용 가능', null)">5</div>
+              <div class="machine-box inuse" onclick="openPopup('6번 세탁기', 'inuse', '사용 중', 8)">6</div>
+              <div class="machine-box available" onclick="openPopup('7번 세탁기', 'available', '사용 가능', null)">7</div>
+            </div>
+            <div class="map-bottom-row">
+              <div class="machine-box available" onclick="openPopup('13번 세탁기', 'available', '사용 가능', null)">13</div>
+              <div class="machine-box inuse" onclick="openPopup('14번 세탁기', 'inuse', '사용 중', 5)">14</div>
+            </div>
+          </div>
           <div class="map-right">
-  		<div class="machine-box available" onclick="openPopup('8번 세탁기', 'available', '사용 가능', null)">8</div>
-  		<div class="machine-box inuse" onclick="openPopup('9번 세탁기', 'inuse', '사용 중', 20)">9</div>
-  		<div class="machine-box available" onclick="openPopup('10번 세탁기', 'available', '사용 가능', null)">10</div>
-  		<div class="machine-box broken" onclick="openPopup('11번 세탁기', 'broken', '사용 불가', null)">11</div>
-  		<div class="machine-box available" onclick="openPopup('12번 세탁기', 'available', '사용 가능', null)">12</div>
-</div>
+            <div class="machine-box available" onclick="openPopup('8번 세탁기', 'available', '사용 가능', null)">8</div>
+            <div class="machine-box inuse" onclick="openPopup('9번 세탁기', 'inuse', '사용 중', 20)">9</div>
+            <div class="machine-box available" onclick="openPopup('10번 세탁기', 'available', '사용 가능', null)">10</div>
+            <div class="machine-box broken" onclick="openPopup('11번 세탁기', 'broken', '사용 불가', null)">11</div>
+            <div class="machine-box available" onclick="openPopup('12번 세탁기', 'available', '사용 가능', null)">12</div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="legend">
       <div class="legend-item"><div class="legend-dot available"></div>사용 가능</div>
       <div class="legend-item"><div class="legend-dot inuse"></div>사용 중</div>
@@ -276,26 +229,29 @@
         <div class="map-layout">
           <div class="map-left">
             <div class="map-top-row">
-  <div class="machine-box available" onclick="openPopup('1번 세탁기', 'available', '사용 가능', null)">1</div>
-  <div class="machine-box inuse" onclick="openPopup('2번 세탁기', 'inuse', '사용 중', 15)">2</div>
-  <div class="machine-box available" onclick="openPopup('3번 세탁기', 'available', '사용 가능', null)">3</div>
-  <div class="machine-box broken" onclick="openPopup('4번 세탁기', 'broken', '사용 불가', null)">4</div>
-  <div class="machine-box available" onclick="openPopup('5번 세탁기', 'available', '사용 가능', null)">5</div>
-  <div class="machine-box inuse" onclick="openPopup('6번 세탁기', 'inuse', '사용 중', 8)">6</div>
-  <div class="machine-box available" onclick="openPopup('7번 세탁기', 'available', '사용 가능', null)">7</div>
-</div>
-<div class="map-bottom-row">
-  <div class="machine-box available" onclick="openPopup('13번 세탁기', 'available', '사용 가능', null)">13</div>
-  <div class="machine-box inuse" onclick="openPopup('14번 세탁기', 'inuse', '사용 중', 5)">14</div>
-</div>
+              <div class="machine-box available" onclick="openPopup('1번 건조기', 'available', '사용 가능', null)">1</div>
+              <div class="machine-box inuse" onclick="openPopup('2번 건조기', 'inuse', '사용 중', 15)">2</div>
+              <div class="machine-box available" onclick="openPopup('3번 건조기', 'available', '사용 가능', null)">3</div>
+              <div class="machine-box broken" onclick="openPopup('4번 건조기', 'broken', '사용 불가', null)">4</div>
+              <div class="machine-box available" onclick="openPopup('5번 건조기', 'available', '사용 가능', null)">5</div>
+              <div class="machine-box inuse" onclick="openPopup('6번 건조기', 'inuse', '사용 중', 8)">6</div>
+              <div class="machine-box available" onclick="openPopup('7번 건조기', 'available', '사용 가능', null)">7</div>
+            </div>
+            <div class="map-bottom-row">
+              <div class="machine-box available" onclick="openPopup('13번 건조기', 'available', '사용 가능', null)">13</div>
+              <div class="machine-box inuse" onclick="openPopup('14번 건조기', 'inuse', '사용 중', 5)">14</div>
+            </div>
           </div>
           <div class="map-right">
-  <div class="machine-box available" onclick="openPopup('8번 세탁기', 'available', '사용 가능', null)">8</div>
-  <div class="machine-box inuse" onclick="openPopup('9번 세탁기', 'inuse', '사용 중', 20)">9</div>
-  <div class="machine-box available" onclick="openPopup('10번 세탁기', 'available', '사용 가능', null)">10</div>
-  <div class="machine-box broken" onclick="openPopup('11번 세탁기', 'broken', '사용 불가', null)">11</div>
-  <div class="machine-box available" onclick="openPopup('12번 세탁기', 'available', '사용 가능', null)">12</div>
-</div>
+            <div class="machine-box available" onclick="openPopup('8번 건조기', 'available', '사용 가능', null)">8</div>
+            <div class="machine-box inuse" onclick="openPopup('9번 건조기', 'inuse', '사용 중', 20)">9</div>
+            <div class="machine-box available" onclick="openPopup('10번 건조기', 'available', '사용 가능', null)">10</div>
+            <div class="machine-box broken" onclick="openPopup('11번 건조기', 'broken', '사용 불가', null)">11</div>
+            <div class="machine-box available" onclick="openPopup('12번 건조기', 'available', '사용 가능', null)">12</div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="legend">
       <div class="legend-item"><div class="legend-dot available"></div>사용 가능</div>
       <div class="legend-item"><div class="legend-dot inuse"></div>사용 중</div>
@@ -312,6 +268,10 @@
       <div class="popup-time" id="popup-time"></div>
       <button class="popup-btn" id="popup-btn" onclick="reserve()">예약하기</button>
     </div>
+  </div>
+
+  <div class="bottom-area">
+    <button class="bottom-btn" onclick="location.href='Myusage.html'">내 이용 현황</button>
   </div>
 
   <script>
@@ -347,8 +307,6 @@
       closePopup();
     }
   </script>
-  <div style="padding: 16px;">
-  <button style="width:100%; padding:14px; border:1.5px solid #111; border-radius:8px; background:#fff; font-size:16px; cursor:pointer;" onclick="location.href='Myusage.html'">내 이용 현황</button>
-</div>
+
 </body>
 </html>
