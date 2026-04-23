@@ -305,7 +305,25 @@
     function reserve() {
       alert('예약 기능은 추후 연결 예정입니다.');
       closePopup();
-    }
+    }let touchStartX = 0;
+
+document.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+});
+
+document.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) < 50) return; // 50px 이하는 무시
+
+  const tabs = document.querySelectorAll('.tab');
+  if (diff > 0) {
+    // 왼쪽 스와이프 → 건조기
+    switchTab('dryer', tabs[1]);
+  } else {
+    // 오른쪽 스와이프 → 세탁기
+    switchTab('washer', tabs[0]);
+  }
+});
   </script>
 
 </body>
