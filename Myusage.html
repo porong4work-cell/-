@@ -217,13 +217,14 @@
   const list = document.getElementById('reservation-list');
   list.innerHTML = ''; 
   data.forEach(item => {
-    // 저장된 item.status 값을 직접 확인해서 배지 결정
-    const statusClass = item.status === 'inuse' ? 'inuse' : 'available';
-    const statusText = item.status === 'inuse' ? '사용 중' : '사용 가능';
+    // 1. 저장된 item.status를 정확히 읽어서 변수에 할당
+    const statusClass = (item.status === 'inuse') ? 'inuse' : 'available';
+    const statusText = (item.status === 'inuse') ? '사용 중' : '사용 가능';
 
     const div = document.createElement('div');
     div.className = 'reservation-card';
     div.id = 'card-' + item.id;
+    // 2. 클래스명과 텍스트를 위에서 만든 변수로 출력
     div.innerHTML = `
       <div class="card-top">
         <div class="card-info">
