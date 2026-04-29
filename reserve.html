@@ -236,14 +236,15 @@
     function confirmReserve() {
       // localStorage에 예약 정보 저장
       const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
-      reservations.push({
-        id: Date.now(),
+      const newReserve = {
+        id: Date.now(),           // 예약 삭제 시 id 기준으로 제거
         name: machineName,
         type: machineType,
         slot: selectedSlot,
         status: 'available',
         remain: remainMin || '-'
-      });
+      };
+      reservations.push(newReserve);
       localStorage.setItem('reservations', JSON.stringify(reservations));
       location.href = 'Myusage.html';
     }
