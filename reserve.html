@@ -234,20 +234,21 @@
     }
 
     function confirmReserve() {
-      // localStorage에 예약 정보 저장
-      const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
-      const newReserve = {
-        id: Date.now(),           // 예약 삭제 시 id 기준으로 제거
-        name: machineName,
-        type: machineType,
-        slot: selectedSlot,
-        status: 'available',
-        remain: remainMin || '-'
-      };
-      reservations.push(newReserve);
-      localStorage.setItem('reservations', JSON.stringify(reservations));
-      location.href = 'Myusage.html';
-    }
+  // 필요한 상태 정보를 가져오기 (이미 remainMin 등을 파라미터로 받고 있음)
+  const isAvailable = (remainMin === null || remainMin === 'null');
+  
+  const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+  reservations.push({
+    id: Date.now(),
+    name: machineName,
+    type: machineType,
+    slot: selectedSlot,
+    status: isAvailable ? 'available' : 'inuse', 
+    remain: remainMin || '-'
+  });
+  localStorage.setItem('reservations', JSON.stringify(reservations));
+  location.href = 'Myusage.html';
+}
   </script>
 </body>
 </html>
