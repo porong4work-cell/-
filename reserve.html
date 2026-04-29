@@ -234,8 +234,8 @@
     }
 
     function confirmReserve() {
-  // 필요한 상태 정보를 가져오기 (이미 remainMin 등을 파라미터로 받고 있음)
-  const isAvailable = (remainMin === null || remainMin === 'null');
+  // remainMin이 'null'이라는 문자열이거나 진짜 null이면 사용 가능으로 판단
+  const isAvailable = (remainMin === null || remainMin === 'null' || remainMin === '');
   
   const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
   reservations.push({
@@ -243,6 +243,7 @@
     name: machineName,
     type: machineType,
     slot: selectedSlot,
+    // 여기서 status를 'available' 또는 'inuse'로 확실하게 저장
     status: isAvailable ? 'available' : 'inuse', 
     remain: remainMin || '-'
   });
