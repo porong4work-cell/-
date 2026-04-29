@@ -217,7 +217,7 @@
   const list = document.getElementById('reservation-list');
   list.innerHTML = ''; 
   data.forEach(item => {
-    // 상태에 따른 클래스 결정
+    // 저장된 item.status 값을 직접 확인해서 배지 결정
     const statusClass = item.status === 'inuse' ? 'inuse' : 'available';
     const statusText = item.status === 'inuse' ? '사용 중' : '사용 가능';
 
@@ -228,7 +228,6 @@
       <div class="card-top">
         <div class="card-info">
           <div class="card-name">${item.name}</div>
-          <!-- 저장된 상태와 텍스트를 출력 -->
           <div class="card-status">상태: <span class="status-badge ${statusClass}">${statusText}</span></div>
           <div class="card-time">예약 시간: ${item.slot}</div>
         </div>
