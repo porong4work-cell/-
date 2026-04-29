@@ -31,14 +31,7 @@
       font-size: 14px;
       cursor: pointer;
     }
-    .back-btn {
-      background: none;
-      border: none;
-      font-size: 22px;
-      cursor: pointer;
-    }
 
-    /* 예약 카드 */
     .content { padding: 16px; }
 
     .reservation-card {
@@ -77,10 +70,6 @@
       border: 1.5px solid;
     }
     .status-badge.available { background: #e6f4ea; border-color: #2e7d32; color: #2e7d32; }
-    .status-badge.inuse { background: #fffde7; border-color: #f57f17; color: #f57f17; }
-
-    /* 세탁기/건조기 SVG */
-    .machine-icon { width: 70px; height: 70px; flex-shrink: 0; }
 
     .card-bottom {
       display: flex;
@@ -101,7 +90,6 @@
     }
     .card-btn.cancel { color: #c62828; }
 
-    /* 빈 상태 */
     .empty-box {
       background: #fff;
       border-radius: 12px;
@@ -114,7 +102,6 @@
       color: #aaa;
     }
 
-    /* 하단 버튼 */
     .bottom-area {
       position: fixed;
       bottom: 0;
@@ -134,7 +121,6 @@
     }
     .bottom-btn:active { background: #f0f0f0; }
 
-    /* 모달 */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -184,4 +170,91 @@
   </div>
 
   <div class="content" id="content">
-    <!-- 예약 목
+    <div id="reservation-list"></div>
+    <div class="empty-box" id="empty-box" style="display:none;">예약한 기기가 없습니다.</div>
+  </div>
+
+  <div class="bottom-area">
+    <button class="bottom-btn" onclick="location.href='laundry.html'">세탁실 현황</button>
+  </div>
+
+  <div class="modal-overlay" id="status-modal" onclick="closeModalOutside(event, 'status-modal')">
+    <div class="modal">
+      <h3>예약 현황</h3>
+      <p>해당 기능은 추후 연결 예정입니다.</p>
+      <div class="modal-btns">
+        <button class="modal-btn confirm" onclick="closeModal('status-modal')">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="cancel-modal" onclick="closeModalOutside(event, 'cancel-modal')">
+    <div class="modal">
+      <h3>예약 취소</h3>
+      <p>예약을 취소하시겠습니까?</p>
+      <div class="modal-btns">
+        <button class="modal-btn" onclick="closeModal('cancel-modal')">돌아가기</button>
+        <button class="modal-btn confirm" onclick="confirmCancel()">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+      const reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+      const list = document.getElementById('reservation-list');
+      const emptyBox = document.getElementById('empty-box');
+
+      if (reservations.length === 0) {
+        list.style.display = 'none';
+        emptyBox.style.display = 'flex';
+      } else {
+        renderReservations(reservations);
+      }
+    };
+
+    function renderReservations(data) {
+      const list = document.getElementById('reservation-list');
+      list.innerHTML = ''; 
+      data.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'reservation-card';
+        div.id = 'card-' + item.id;
+        div.innerHTML = `
+          <div class="card-top">
+            <div class="card-info">
+              <div class="card-name">${item.name}</div>
+              <div class="card-status">상태: <span class="status-badge available">사용 가능</span></div>
+              <div class="card-time">예약 시간: ${item.slot}</div>
+            </div>
+          </div>
+          <div class="card-bottom">
+            <button class="card-btn" onclick="openStatusModal()">예약 현황</button>
+            <button class="card-btn cancel" onclick="openCancelModal(${item.id})">예약 취소</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    let cancelTargetId = null;
+    function openStatusModal() { document.getElementById('status-modal').classList.add('show'); }
+    function openCancelModal(id) { cancelTargetId = id; document.getElementById('cancel-modal').classList.add('show'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+    function closeModalOutside(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+
+    function confirmCancel() {
+      let reservations = JSON.parse(localStorage.getItem('reservations')) || [];
+      reservations = reservations.filter(item => item.id !== cancelTargetId);
+      localStorage.setItem('reservations', JSON.stringify(reservations));
+      const card = document.getElementById('card-' + cancelTargetId);
+      if (card) card.remove();
+      closeModal('cancel-modal');
+      if (reservations.length === 0) {
+        document.getElementById('reservation-list').style.display = 'none';
+        document.getElementById('empty-box').style.display = 'flex';
+      }
+    }
+  </script>
+</body>
+</html>
