@@ -303,9 +303,14 @@
     }
 
     function reserve() {
-      if (!currentMachineName) return;
-      location.href = 'reserve.html?name=' + encodeURIComponent(currentMachineName);
-    }
+  if (!currentMachineName) return;
+  // 파라미터를 name이랑 remain 둘 다 보내기
+  const status = document.getElementById('popup-status').textContent;
+  const isAvailable = (status === '사용 가능');
+  const remain = isAvailable ? 'null' : document.getElementById('popup-time').textContent.replace('예상 잔여 시간: ', '').replace('분', '');
+  
+  location.href = 'reserve.html?name=' + encodeURIComponent(currentMachineName) + '&remain=' + remain;
+        }
 
     let touchStartX = 0;
 
