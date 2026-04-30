@@ -217,14 +217,32 @@
   const list = document.getElementById('reservation-list');
   list.innerHTML = ''; 
   data.forEach(item => {
-    // 1. 저장된 item.status를 정확히 읽어서 변수에 할당
     const statusClass = (item.status === 'inuse') ? 'inuse' : 'available';
     const statusText = (item.status === 'inuse') ? '사용 중' : '사용 가능';
+
+    // 기기 종류에 따른 SVG 선택
+    const svgIcon = (item.type === 'dryer') ? `
+      <svg class="machine-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="8" width="84" height="84" rx="6" stroke="#333" stroke-width="3" fill="#fff"/>
+        ircle cx="50" cy="52" r="26" stroke="#333" stroke-width="2.5"/>
+        ircle cx="50" cy="52" r="20" stroke="#333" stroke-width="2"/>
+        lipPath id="dclip-${item.id}">ircle cx="50" cy="52" r="19"/></clipPath>
+        <g clip-path="url(#dclip-${item.id})">
+          <path d="M34 46 Q40 40 48 46 Q54 52 62 44" stroke="#6ab4f5" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <path d="M34 52 Q42 44 50 50 Q58 56 66 48" stroke="#6ab4f5" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        </g>
+      </svg>` : `
+      <svg class="machine-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="8" width="84" height="84" rx="6" stroke="#333" stroke-width="3" fill="#fff"/>
+        ircle cx="50" cy="52" r="26" stroke="#333" stroke-width="2.5"/>
+        ircle cx="50" cy="52" r="20" stroke="#333" stroke-width="2"/>
+        lipPath id="wclip-${item.id}">ircle cx="50" cy="52" r="20"/></clipPath>
+        <rect x="30" y="58" width="40" height="14" fill="#cce8ff" clip-path="url(#wclip-${item.id})"/>
+      </svg>`;
 
     const div = document.createElement('div');
     div.className = 'reservation-card';
     div.id = 'card-' + item.id;
-    // 2. 클래스명과 텍스트를 위에서 만든 변수로 출력
     div.innerHTML = `
       <div class="card-top">
         <div class="card-info">
@@ -232,6 +250,7 @@
           <div class="card-status">상태: <span class="status-badge ${statusClass}">${statusText}</span></div>
           <div class="card-time">예약 시간: ${item.slot}</div>
         </div>
+        ${svgIcon}
       </div>
       <div class="card-bottom">
         <button class="card-btn" onclick="openStatusModal()">예약 현황</button>
@@ -240,7 +259,7 @@
     `;
     list.appendChild(div);
   });
-}
+    }
 
     let cancelTargetId = null;
     function openStatusModal() { document.getElementById('status-modal').classList.add('show'); }
