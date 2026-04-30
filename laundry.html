@@ -273,62 +273,62 @@
 
   <script>
     let currentMachineName = '';
+let currentMachineType = 'washer';
 
-    function switchTab(tab, el) {
-      document.getElementById('tab-washer').classList.add('hidden');
-      document.getElementById('tab-dryer').classList.add('hidden');
-      document.getElementById('tab-' + tab).classList.remove('hidden');
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      el.classList.add('active');
-    }
+function switchTab(tab, el) {
+  document.getElementById('tab-washer').classList.add('hidden');
+  document.getElementById('tab-dryer').classList.add('hidden');
+  document.getElementById('tab-' + tab).classList.remove('hidden');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
 
-    function openPopup(name, statusClass, statusText, remainMin) {
-      currentMachineName = name;
-      document.getElementById('popup-title').textContent = name;
-      const statusEl = document.getElementById('popup-status');
-      statusEl.textContent = statusText;
-      statusEl.className = 'popup-status ' + statusClass;
-      document.getElementById('popup-time').textContent = remainMin !== null ? '예상 잔여 시간: ' + remainMin + '분' : '예상 잔여 시간: -';
-      const btn = document.getElementById('popup-btn');
-      btn.disabled = statusClass === 'broken';
-      document.getElementById('popup-overlay').classList.add('show');
-    }
+function openPopup(name, statusClass, statusText, remainMin) {
+  currentMachineName = name;
+  currentMachineType = document.getElementById('tab-washer').classList.contains('hidden') ? 'dryer' : 'washer';
+  document.getElementById('popup-title').textContent = name;
+  const statusEl = document.getElementById('popup-status');
+  statusEl.textContent = statusText;
+  statusEl.className = 'popup-status ' + statusClass;
+  document.getElementById('popup-time').textContent = remainMin !== null ? '예상 잔여 시간: ' + remainMin + '분' : '예상 잔여 시간: -';
+  const btn = document.getElementById('popup-btn');
+  btn.disabled = statusClass === 'broken';
+  document.getElementById('popup-overlay').classList.add('show');
+}
 
-    function closePopup() {
-      document.getElementById('popup-overlay').classList.remove('show');
-    }
+function closePopup() {
+  document.getElementById('popup-overlay').classList.remove('show');
+}
 
-    function closePopupOutside(e) {
-      if (e.target === document.getElementById('popup-overlay')) closePopup();
-    }
+function closePopupOutside(e) {
+  if (e.target === document.getElementById('popup-overlay')) closePopup();
+}
 
-    function reserve() {
+function reserve() {
   if (!currentMachineName) return;
-  // 파라미터를 name이랑 remain 둘 다 보내기
   const status = document.getElementById('popup-status').textContent;
   const isAvailable = (status === '사용 가능');
   const remain = isAvailable ? 'null' : document.getElementById('popup-time').textContent.replace('예상 잔여 시간: ', '').replace('분', '');
-  
-  location.href = 'reserve.html?name=' + encodeURIComponent(currentMachineName) + '&remain=' + remain;
-        }
+  location.href = 'reserve.html?name=' + encodeURIComponent(currentMachineName) + '&remain=' + remain + '&type=' + currentMachineType;
+}
 
-    let touchStartX = 0;
+let touchStartX = 0;
 
-    document.addEventListener('touchstart', e => {
-      touchStartX = e.touches[0].clientX;
-    });
+document.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+});
 
-    document.addEventListener('touchend', e => {
-      const diff = touchStartX - e.changedTouches[0].clientX;
-      if (Math.abs(diff) < 50) return;
+document.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) < 50) return;
 
-      const tabs = document.querySelectorAll('.tab');
-      if (diff > 0) {
-        switchTab('dryer', tabs[1]);
-      } else {
-        switchTab('washer', tabs[0]);
-      }
-    });
+  const tabs = document.querySelectorAll('.tab');
+  if (diff > 0) {
+    switchTab('dryer', tabs[1]);
+  } else {
+    switchTab('washer', tabs[0]);
+  }
+});
   </script>
 
 </body>
