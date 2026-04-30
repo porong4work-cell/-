@@ -224,28 +224,32 @@
       const list = document.getElementById('reservation-list');
       list.innerHTML = ''; 
 
-      // 기존 laundry.html의 디자인과 동일한 SVG 코드
       const washerSvg = `
-      <svg class="machine-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="8" y="8" width="84" height="84" rx="6" stroke="#333" stroke-width="3" fill="#fff"/>
-        <circle cx="50" cy="52" r="26" stroke="#333" stroke-width="2.5"/>
-        <circle cx="50" cy="52" r="20" stroke="#333" stroke-width="2"/>
-        <rect x="30" y="58" width="40" height="14" fill="#cce8ff"/>
-        <path d="M30 60 Q40 54 50 60 Q60 66 70 60" stroke="#6ab4f5" stroke-width="2" fill="none"/>
-        <rect x="28" y="80" width="22" height="6" rx="3" stroke="#333" stroke-width="2" fill="#fff"/>
-        <circle cx="22" cy="22" r="4" stroke="#333" stroke-width="2" fill="#fff"/>
-      </svg>`;
+<svg class="machine-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="8" y="8" width="84" height="84" rx="6" stroke="#333" stroke-width="3" fill="#fff"/>
+  <circle cx="50" cy="52" r="26" stroke="#333" stroke-width="2.5"/>
+  <clipPath id="wclip2"><circle cx="50" cy="52" r="20"/></clipPath>
+  <rect x="30" y="58" width="40" height="14" fill="#cce8ff" clip-path="url(#wclip2)"/>
+  <path d="M30 60 Q40 54 50 60 Q60 66 70 60" stroke="#6ab4f5" stroke-width="2" fill="none" clip-path="url(#wclip2)"/>
+  <circle cx="50" cy="52" r="20" stroke="#333" stroke-width="2"/>
+  <rect x="28" y="80" width="22" height="6" rx="3" stroke="#333" stroke-width="2" fill="#fff"/>
+  <circle cx="22" cy="22" r="4" stroke="#333" stroke-width="2" fill="#fff"/>
+</svg>`;
 
-      const dryerSvg = `
-      <svg class="machine-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="8" y="8" width="84" height="84" rx="6" stroke="#333" stroke-width="3" fill="#fff"/>
-        <circle cx="50" cy="52" r="26" stroke="#333" stroke-width="2.5"/>
-        <circle cx="50" cy="52" r="20" stroke="#333" stroke-width="2"/>
-        <path d="M34 46 Q40 40 48 46 Q54 52 62 44" stroke="#6ab4f5" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-        <path d="M34 52 Q42 44 50 50 Q58 56 66 48" stroke="#6ab4f5" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-        <rect x="28" y="80" width="22" height="6" rx="3" stroke="#333" stroke-width="2" fill="#fff"/>
-        <circle cx="22" cy="22" r="4" stroke="#333" stroke-width="2" fill="#fff"/>
-      </svg>`;
+const dryerSvg = `
+<svg class="machine-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="8" y="8" width="84" height="84" rx="6" stroke="#333" stroke-width="3" fill="#fff"/>
+  <circle cx="50" cy="52" r="26" stroke="#333" stroke-width="2.5"/>
+  <clipPath id="dclip2"><circle cx="50" cy="52" r="20"/></clipPath>
+  <g clip-path="url(#dclip2)">
+    <path d="M34 46 Q40 40 48 46 Q54 52 62 44" stroke="#6ab4f5" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <path d="M34 52 Q42 44 50 50 Q58 56 66 48" stroke="#6ab4f5" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <path d="M34 58 Q42 50 50 56 Q58 62 66 54" stroke="#6ab4f5" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  </g>
+  <circle cx="50" cy="52" r="20" stroke="#333" stroke-width="2"/>
+  <rect x="28" y="80" width="22" height="6" rx="3" stroke="#333" stroke-width="2" fill="#fff"/>
+  <circle cx="22" cy="22" r="4" stroke="#333" stroke-width="2" fill="#fff"/>
+</svg>`;
 
       data.forEach(item => {
         const statusClass = (item.status === 'inuse') ? 'inuse' : 'available';
