@@ -272,11 +272,7 @@
       { type: 'dinner', title: '저녁', emoji: '🌙', time: '17:30~19:30', items: '자장덮밥, 달걀국, 칠리탕수육, 연유꽃빵,\n파김치' }
     ];
 
-    const hour = today.getHours();
-    let order;
-    if (hour < 9) order = ['breakfast', 'lunch', 'dinner'];
-    else if (hour < 13) order = ['lunch', 'dinner', 'breakfast'];
-    else order = ['dinner', 'breakfast', 'lunch'];
+    const sorted = meals;
 
     const sorted = order.map(t => meals.find(m => m.type === t));
     const mealContainer = document.getElementById('meal-content');
