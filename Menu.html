@@ -32,8 +32,7 @@
     .dropdown {
       display: none;
       position: absolute;
-      top: 36px;
-      right: 0;
+      top: 36px; right: 0;
       background: #fff;
       border: 1px solid #eee;
       border-radius: 10px;
@@ -43,12 +42,7 @@
       overflow: hidden;
     }
     .dropdown.show { display: block; }
-    .dropdown-item {
-      padding: 13px 18px;
-      font-size: 15px;
-      cursor: pointer;
-      border-bottom: 1px solid #f5f5f5;
-    }
+    .dropdown-item { padding: 13px 18px; font-size: 15px; cursor: pointer; border-bottom: 1px solid #f5f5f5; }
     .dropdown-item:last-child { border-bottom: none; }
     .dropdown-item:active { background: #f5f5f5; }
 
@@ -62,11 +56,25 @@
       border-bottom: 1px solid #eee;
     }
 
-    /* 슬라이더 */
-    .slider-wrap {
-      overflow: hidden;
-      width: 100%;
+    /* 추천 카드 고정 */
+    .recommend-fixed {
+      background: #fff;
+      border-bottom: 1px solid #eee;
+      padding: 12px 16px;
     }
+    .recommend-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 2px solid #f6c90e;
+      padding: 14px 18px;
+    }
+    .recommend-header { font-size: 15px; font-weight: 600; color: #b8860b; margin-bottom: 8px; }
+    .recommend-sub { font-size: 13px; color: #888; margin-bottom: 6px; }
+    .recommend-empty { font-size: 13px; color: #aaa; }
+    .meal-items-sm { font-size: 13px; color: #444; line-height: 1.7; }
+
+    /* 슬라이더 */
+    .slider-wrap { overflow: hidden; width: 100%; }
     .slider {
       display: flex;
       transition: transform 0.3s ease;
@@ -79,25 +87,8 @@
       padding-bottom: 60px;
     }
 
-    /* 추천 카드 */
-    .recommend-card {
-      background: #fff;
-      border-radius: 12px;
-      border: 2px solid #f6c90e;
-      padding: 18px 20px;
-      margin-bottom: 14px;
-    }
-    .recommend-header { font-size: 16px; font-weight: 600; color: #b8860b; margin-bottom: 12px; }
-    .recommend-sub { font-size: 13px; color: #888; margin-bottom: 8px; }
-    .recommend-empty { font-size: 14px; color: #aaa; text-align: center; padding: 12px 0; }
-
     /* 식당 레이블 */
-    .canteen-label {
-      font-size: 13px;
-      color: #888;
-      margin-bottom: 12px;
-      font-weight: 500;
-    }
+    .canteen-label { font-size: 13px; color: #888; margin-bottom: 12px; font-weight: 500; }
 
     /* 식사 카드 */
     .meal-card {
@@ -115,7 +106,7 @@
     .lunch .meal-title { color: #f57f17; }
     .dinner .meal-title { color: #1565c0; }
 
-    /* 선호도 페이지 */
+    /* 선호도 */
     .pref-card {
       background: #fff;
       border-radius: 12px;
@@ -123,51 +114,32 @@
       padding: 18px 20px;
       margin-bottom: 8px;
     }
-    .pref-card-title {
-      font-size: 15px;
-      font-weight: 500;
-      margin-bottom: 12px;
-      color: #333;
-    }
+    .pref-card-title { font-size: 15px; font-weight: 500; margin-bottom: 12px; color: #333; }
     .pref-empty { font-size: 14px; color: #aaa; text-align: center; padding: 16px 0; }
     .chip-inline {
-      display: inline-block;
-      padding: 2px 10px;
-      border-radius: 99px;
-      font-size: 12px;
-      font-weight: 500;
-      margin: 2px 2px;
-      background: #e8f0fd;
-      border: 1px solid #3182ce;
-      color: #3182ce;
+      display: inline-block; padding: 2px 10px; border-radius: 99px;
+      font-size: 12px; font-weight: 500; margin: 2px;
+      background: #e8f0fd; border: 1px solid #3182ce; color: #3182ce;
     }
     .chip-inline.dc { background: #fee2e2; border-color: #dc2626; color: #dc2626; }
     .chip-inline.dislike { background: #fef3c7; border-color: #d97706; color: #d97706; }
     .pref-setting-btn {
-      width: 100%;
-      padding: 12px;
-      border: 1.5px solid #111;
-      border-radius: 8px;
-      background: #fff;
-      font-size: 15px;
-      cursor: pointer;
-      margin-top: 8px;
+      width: 100%; padding: 12px; border: 1.5px solid #111;
+      border-radius: 8px; background: #fff; font-size: 15px; cursor: pointer; margin-top: 8px;
     }
     .pref-setting-btn:active { background: #f0f0f0; }
 
     /* 하단 점 */
     .dots {
       position: fixed;
-      bottom: 16px;
-      left: 0; right: 0;
+      bottom: 16px; left: 0; right: 0;
       display: flex;
       justify-content: center;
       gap: 8px;
       z-index: 10;
     }
     .dot {
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       border-radius: 50%;
       background: #ddd;
       transition: background 0.2s;
@@ -177,14 +149,10 @@
 
     /* 업로드 모달 */
     .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.4);
-      z-index: 300;
-      align-items: center;
-      justify-content: center;
+      display: none; position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4); z-index: 300;
+      align-items: center; justify-content: center;
     }
     .modal-overlay.show { display: flex; }
     .modal { background: #fff; border-radius: 16px; padding: 28px 24px; width: 88%; }
@@ -235,15 +203,20 @@
 
   <div class="date-bar" id="date-bar"></div>
 
+  <!-- 추천 카드 고정 -->
+  <div class="recommend-fixed">
+    <div class="recommend-card">
+      <div class="recommend-header">⭐ 추천</div>
+      <div id="recommend-content"></div>
+    </div>
+  </div>
+
+  <!-- 슬라이더 -->
   <div class="slider-wrap">
     <div class="slider" id="slider">
 
       <!-- 슬라이드 0: 내 메뉴 선호도 -->
-      <div class="slide" id="slide-pref">
-        <div class="recommend-card">
-          <div class="recommend-header">⭐ 추천</div>
-          <div id="recommend-content"></div>
-        </div>
+      <div class="slide">
         <div class="pref-card">
           <div class="pref-card-title">내 메뉴 선호도</div>
           <div id="pref-body"></div>
@@ -252,13 +225,13 @@
       </div>
 
       <!-- 슬라이드 1: 기숙사 식당 -->
-      <div class="slide" id="slide-dorm">
+      <div class="slide">
         <div class="canteen-label">🏠 기숙사 식당</div>
         <div id="dorm-meals"></div>
       </div>
 
       <!-- 슬라이드 2: 교직원 식당 -->
-      <div class="slide" id="slide-staff">
+      <div class="slide">
         <div class="canteen-label">🏢 교직원 식당</div>
         <div id="staff-meals"></div>
       </div>
@@ -268,10 +241,10 @@
 
   <!-- 하단 점 -->
   <div class="dots">
-  <div class="dot active" id="dot-0" onclick="goToSlide(0)"></div>
-  <div class="dot" id="dot-1" onclick="goToSlide(1)"></div>
-  <div class="dot" id="dot-2" onclick="goToSlide(2)"></div>
-</div>
+    <div class="dot active" id="dot-0" onclick="goToSlide(0)"></div>
+    <div class="dot" id="dot-1" onclick="goToSlide(1)"></div>
+    <div class="dot" id="dot-2" onclick="goToSlide(2)"></div>
+  </div>
 
   <!-- 업로드 모달 -->
   <div class="modal-overlay" id="upload-modal" onclick="closeModalOutside(event)">
@@ -310,6 +283,13 @@
       { type: 'dinner', title: '저녁', emoji: '🌙', time: '17:30~19:30', items: '김치찌개, 생선구이, 콩나물무침,\n배추김치, 밥' }
     ];
 
+    // 식당별 추천 (기숙사-아침, 교직원-저녁)
+    const recommendations = {
+      0: null, // 선호도 페이지는 추천 없음
+      1: dormMeals[0],   // 기숙사 → 아침 추천
+      2: staffMeals[2],  // 교직원 → 저녁 추천
+    };
+
     function renderMeals(containerId, meals) {
       const container = document.getElementById(containerId);
       meals.forEach(meal => {
@@ -328,18 +308,23 @@
     renderMeals('dorm-meals', dormMeals);
     renderMeals('staff-meals', staffMeals);
 
-    // 추천 카드
+    // 추천 카드 업데이트
     const pref = JSON.parse(localStorage.getItem('preference')) || null;
-    const recommendEl = document.getElementById('recommend-content');
-    if (!pref) {
-      recommendEl.innerHTML = '<div class="recommend-empty">메뉴 선호도를 설정해주세요.</div>';
-    } else {
-      const first = dormMeals[0];
+    function updateRecommend(slideIdx) {
+      const recommendEl = document.getElementById('recommend-content');
+      const meal = recommendations[slideIdx];
+      if (!meal) {
+        recommendEl.innerHTML = pref
+          ? '<div class="recommend-empty">식당 탭으로 이동하면 추천 메뉴를 볼 수 있어요.</div>'
+          : '<div class="recommend-empty">메뉴 선호도를 설정해주세요.</div>';
+        return;
+      }
       recommendEl.innerHTML = `
-        <div class="recommend-sub">${first.emoji} ${first.title} ${first.time}</div>
-        <div class="meal-items">${first.items.replace(/\n/g, '<br>')}</div>
+        <div class="recommend-sub">${meal.emoji} ${meal.title} ${meal.time}</div>
+        <div class="meal-items-sm">${meal.items.replace(/\n/g, '<br>')}</div>
       `;
     }
+    updateRecommend(0);
 
     // 선호도 표시
     const prefBody = document.getElementById('pref-body');
@@ -369,6 +354,7 @@
       for (let i = 0; i < totalSlides; i++) {
         document.getElementById('dot-' + i).classList.toggle('active', i === idx);
       }
+      updateRecommend(idx);
     }
 
     // 터치 스와이프
@@ -383,8 +369,7 @@
     });
 
     // 마우스 스와이프
-    let mouseStartX = 0;
-    let isDragging = false;
+    let mouseStartX = 0, isDragging = false;
     sliderWrap.addEventListener('mousedown', e => { mouseStartX = e.clientX; isDragging = true; });
     sliderWrap.addEventListener('mouseup', e => {
       if (!isDragging) return;
