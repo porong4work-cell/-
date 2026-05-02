@@ -6,514 +6,84 @@
   <title>Preference</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    :root{
-      --blue:#3182ce;
-      --blue-light:#e8f0fd;
-      --blue-mid:#4a90e2;
-      --green:#16a34a;
-      --red:#dc2626;
-      --red-light:#fee2e2;
-      --amber:#d97706;
-      --amber-light:#fef3c7;
-      --g50:#f8fafc;
-      --g100:#f1f5f9;
-      --g200:#e2e8f0;
-      --g300:#cbd5e1;
-      --g400:#94a3b8;
-      --g500:#64748b;
-      --g700:#334155;
-      --g900:#0f172a;
-      --white:#fff;
-      --radius:12px;
-      --rsm:8px;
-      --shadow:0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
-    }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Noto Sans KR', sans-serif;
-      background: var(--g50);
-      color: var(--g900);
-      min-height: 100vh;
-      padding-bottom: 80px;
-    }
-    .page {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 28px 16px 0;
-    }
-    .page-header {
-      margin-bottom: 24px;
-    }
-    .page-header h1 {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-    .page-header p {
-      font-size: 14px;
-      color: var(--g500);
-      margin-top: 4px;
-    }
-    .card {
-      background: var(--white);
-      border: 1px solid var(--g200);
-      border-radius: var(--radius);
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow);
-    }
-    .card-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--g700);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .step-badge {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--blue);
-      color: var(--white);
-      font-size: 11px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .form-group.full {
-      grid-column: 1 / -1;
-    }
-    .form-label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--g500);
-    }
-    .form-input {
-      height: 38px;
-      padding: 0 10px;
-      border: 1px solid var(--g200);
-      border-radius: var(--rsm);
-      font-size: 13px;
-      font-family: 'Noto Sans KR', sans-serif;
-      background: var(--g50);
-      color: var(--g900);
-      outline: none;
-      transition: border-color .15s, background .15s;
-    }
-    .form-input:focus {
-      border-color: var(--blue);
-      background: var(--white);
-    }
-    .form-input::placeholder { color: var(--g400); }
-
-    .chip-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .chip {
-      padding: 5px 12px;
-      border: 1px solid var(--g200);
-      border-radius: 99px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--g500);
-      cursor: pointer;
-      user-select: none;
-      transition: all .15s;
-      background: var(--white);
-    }
-    .chip:hover {
-      border-color: var(--blue-mid);
-      color: var(--blue);
-    }
-    .chip.selected {
-      background: var(--blue-light);
-      border-color: var(--blue);
-      color: var(--blue);
-    }
-    .chip.dc.selected {
-      background: var(--red-light);
-      border-color: var(--red);
-      color: var(--red);
-    }
-    .chip.wc.selected {
-      background: var(--amber-light);
-      border-color: var(--amber);
-      color: var(--amber);
-    }
-
-    .run-btn {
-      width: 100%;
-      height: 48px;
-      background: var(--blue);
-      color: var(--white);
-      border: none;
-      border-radius: var(--rsm);
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: opacity .15s, transform .1s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-family: 'Noto Sans KR', sans-serif;
-      margin-bottom: 16px;
-    }
-    .run-btn:hover:not(:disabled) { opacity: .88; }
-    .run-btn:active:not(:disabled) { transform: scale(.98); }
-    .run-btn:disabled {
-      opacity: .5;
-      cursor: not-allowed;
-    }
-
-    .loading {
-      display: none;
-      text-align: center;
-      padding: 36px 0;
-    }
-    .loading.show { display: block; }
-    .spinner {
-      width: 36px;
-      height: 36px;
-      margin: 0 auto 12px;
-      border: 3px solid var(--g200);
-      border-top-color: var(--blue);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-msg {
-      font-size: 13px;
-      color: var(--g500);
-    }
-    .loading-step {
-      font-size: 11px;
-      color: var(--g400);
-      margin-top: 4px;
-    }
-
-    .error-box {
-      display: none;
-      background: var(--red-light);
-      border: 1px solid #fca5a5;
-      border-radius: var(--rsm);
-      padding: 12px 14px;
-      font-size: 13px;
-      color: var(--red);
-      margin-bottom: 12px;
-      line-height: 1.6;
-      white-space: pre-wrap;
-      word-break: break-all;
-    }
-    .error-box.show { display: block; }
-
-    .result-section {
-      display: none;
-    }
-    .result-section.show {
-      display: block;
-    }
-    .result-header {
-      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%);
-      color: var(--white);
-      border-radius: var(--radius);
-      padding: 18px 20px;
-      margin-bottom: 12px;
-    }
-    .result-header h2 {
-      font-size: 16px;
-      font-weight: 700;
-    }
-    .result-header .badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-    .result-badge {
-      background: rgba(255,255,255,.2);
-      border-radius: 99px;
-      padding: 3px 10px;
-      font-size: 11px;
-      font-weight: 500;
-    }
-
-    .day-card {
-      background: var(--white);
-      border: 1px solid var(--g200);
-      border-radius: var(--radius);
-      margin-bottom: 10px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .day-header {
-      padding: 12px 16px;
-      background: var(--g50);
-      border-bottom: 1px solid var(--g200);
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--g700);
-    }
-    .meal-row {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--g100);
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
-    .meal-row:last-child {
-      border-bottom: none;
-    }
-    .meal-time-badge {
-      flex-shrink: 0;
-      width: 42px;
-      font-size: 12px;
-      font-weight: 700;
-      text-align: center;
-      padding: 3px 0;
-      border-radius: var(--rsm);
-    }
-    .meal-time-badge.bk { background: #fff7ed; color: #c2410c; }
-    .meal-time-badge.ln { background: #f0fdf4; color: #15803d; }
-    .meal-time-badge.dn { background: #eff6ff; color: #1d4ed8; }
-    .meal-content {
-      flex: 1;
-      min-width: 0;
-    }
-    .meal-status-ok {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--green);
-      margin-bottom: 4px;
-    }
-    .meal-status-ng {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--red);
-      margin-bottom: 4px;
-    }
-    .course-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      background: var(--blue-light);
-      color: var(--blue);
-      border-radius: 99px;
-      font-size: 11px;
-      font-weight: 700;
-      margin-left: 6px;
-    }
-    .meal-menu {
-      font-size: 13px;
-      color: var(--g700);
-      line-height: 1.6;
-    }
-    .meal-menu.ng {
-      color: var(--g400);
-      font-style: italic;
-    }
-    .meal-reason {
-      font-size: 11px;
-      color: var(--g400);
-      margin-top: 4px;
-      line-height: 1.5;
-    }
-    .debug-box {
-      display: none;
-      background: #1e1e2e;
-      border-radius: var(--rsm);
-      padding: 12px;
-      margin-top: 12px;
-      font-family: monospace;
-      font-size: 11px;
-      color: #cdd6f4;
-      white-space: pre-wrap;
-      max-height: 240px;
-      overflow-y: auto;
-      word-break: break-all;
-    }
-    .debug-box.show { display: block; }
-
-    @media (max-width: 500px) {
-      .form-grid { grid-template-columns: 1fr; }
-    }
+    :root{ --blue:#3182ce; --blue-light:#e8f0fd; --blue-mid:#4a90e2; --red:#dc2626; --red-light:#fee2e2; --amber:#d97706; --amber-light:#fef3c7; --g50:#f8fafc; --g200:#e2e8f0; --g400:#94a3b8; --g500:#64748b; --g700:#334155; --g900:#0f172a; --white:#fff; --radius:12px; --rsm:8px; --shadow:0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06); }
+    body { font-family: 'Noto Sans KR', sans-serif; background: var(--g50); color: var(--g900); min-height: 100vh; padding-bottom: 40px; }
+    .page { max-width: 720px; margin: 0 auto; padding: 28px 16px; }
+    .page-header { margin-bottom: 24px; }
+    .page-header h1 { font-size: 22px; font-weight: 700; }
+    .page-header p { font-size: 14px; color: var(--g500); margin-top: 4px; }
+    .card { background: var(--white); border: 1px solid var(--g200); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
+    .card-title { font-size: 14px; font-weight: 700; color: var(--g700); margin-bottom: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-label { font-size: 12px; font-weight: 500; color: var(--g500); }
+    .form-input { height: 38px; padding: 0 10px; border: 1px solid var(--g200); border-radius: var(--rsm); font-size: 13px; background: var(--g50); outline: none; }
+    .input-row { display: flex; gap: 8px; margin-top: 4px; }
+    .btn-add { padding: 0 16px; background: var(--blue); color: var(--white); border: none; border-radius: var(--rsm); font-size: 12px; cursor: pointer; }
+    .chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip { padding: 5px 12px; border: 1px solid var(--g200); border-radius: 99px; font-size: 12px; font-weight: 500; color: var(--g500); cursor: pointer; background: var(--white); }
+    .chip.selected { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+    .chip.dc.selected { background: var(--red-light); border-color: var(--red); color: var(--red); }
+    .run-btn { width: 100%; height: 48px; background: var(--blue); color: var(--white); border: none; border-radius: var(--rsm); font-size: 15px; font-weight: 700; cursor: pointer; }
   </style>
 </head>
 <body>
   <div class="page">
     <div class="page-header">
-      <h1>Preference</h1>
+      <h1>메뉴 선호도 설정</h1>
       <p>식단과 개인 선호를 바탕으로 추천 결과를 확인하세요.</p>
     </div>
 
     <div class="card">
-      <div class="card-title"><span class="step-badge">1</span>내 정보 입력</div>
-      <div class="form-grid">
-        <div class="form-group full">
-          <div class="form-label">선호 유형</div>
-          <div class="chip-group" id="likedTypes">
-            <div class="chip" data-val="한식" onclick="tc(this)">한식</div>
-            <div class="chip" data-val="양식" onclick="tc(this)">양식</div>
-            <div class="chip" data-val="중식" onclick="tc(this)">중식</div>
-            <div class="chip" data-val="일식" onclick="tc(this)">일식</div>
-            <div class="chip" data-val="기타" onclick="tc(this)">기타</div>
-          </div>
-        </div>
+      <div class="card-title">선호 유형</div>
+      <div class="chip-group" id="likedTypes">
+        <div class="chip" data-val="한식" onclick="tc(this)">한식</div>
+        <div class="chip" data-val="양식" onclick="tc(this)">양식</div>
+        <div class="chip" data-val="중식" onclick="tc(this)">중식</div>
+        <div class="chip" data-val="일식" onclick="tc(this)">일식</div>
+      </div>
+      
+      <div class="card-title" style="margin-top:20px;">좋아하는 메뉴</div>
+      <div class="chip-group" id="likedCuisines">
+        <div class="chip" data-val="밥" onclick="tc(this)">밥</div>
+        <div class="chip" data-val="면" onclick="tc(this)">면</div>
+        <div class="chip" data-val="고기" onclick="tc(this)">고기</div>
+      </div>
 
-        <div class="form-group full">
-          <div class="form-label">좋아하는 메뉴</div>
-          <div class="chip-group" id="likedCuisines">
-            <div class="chip" data-val="밥" onclick="tc(this)">밥</div>
-            <div class="chip" data-val="면" onclick="tc(this)">면</div>
-            <div class="chip" data-val="국" onclick="tc(this)">국</div>
-            <div class="chip" data-val="고기" onclick="tc(this)">고기</div>
-            <div class="chip" data-val="채소" onclick="tc(this)">채소</div>
-          </div>
-        </div>
+      <div class="form-group" style="margin-top:20px;">
+        <div class="form-label">싫어하는 메뉴</div>
+        <input class="form-input" id="disliked" placeholder="예: 매운 음식, 생선" />
+      </div>
 
-        <div class="form-group full">
-          <div class="form-label">싫어하는 메뉴</div>
-          <input class="form-input" id="disliked" placeholder="예: 매운 음식, 생선" />
-        </div>
-
-        <div class="form-group full">
-          <div class="form-label">알레르기</div>
-          <div class="chip-group" id="allergies">
-            <div class="chip dc" data-val="우유" onclick="tc(this)">우유</div>
-            <div class="chip dc" data-val="계란" onclick="tc(this)">계란</div>
-            <div class="chip dc" data-val="땅콩" onclick="tc(this)">땅콩</div>
-            <div class="chip dc" data-val="밀" onclick="tc(this)">밀</div>
-            <div class="chip dc" data-val="새우" onclick="tc(this)">새우</div>
-          </div>
-        </div>
-
-        <div class="form-group full">
-          <div class="form-label">피하고 싶은 시간대</div>
-          <div class="chip-group" id="blockedTimes">
-            <div class="chip wc" data-val="조식" onclick="tc(this)">조식</div>
-            <div class="chip wc" data-val="중식" onclick="tc(this)">중식</div>
-            <div class="chip wc" data-val="석식" onclick="tc(this)">석식</div>
-          </div>
-        </div>
+      <div class="card-title">알레르기</div>
+      <div class="chip-group" id="allergies">
+        <div class="chip dc" data-val="우유" onclick="tc(this)">우유</div>
+        <div class="chip dc" data-val="계란" onclick="tc(this)">계란</div>
+        <div class="chip dc" data-val="땅콩" onclick="tc(this)">땅콩</div>
+      </div>
+      <div class="input-row">
+        <input class="form-input" id="newAllergy" placeholder="직접 입력" style="flex:1;" />
+        <button class="btn-add" onclick="addAllergy()">확인</button>
       </div>
     </div>
 
-    <div class="error-box" id="errorBox"></div>
-
-    <button class="run-btn" id="runBtn" onclick="run()">추천받기</button>
-
-    <div class="loading" id="loading">
-      <div class="spinner"></div>
-      <div class="loading-msg" id="lMsg">분석 중...</div>
-      <div class="loading-step" id="lStep"></div>
-    </div>
-
-    <div class="result-section" id="resultSection">
-      <div class="result-header" id="resultHeader"></div>
-      <div id="resultCards"></div>
-    </div>
-
-    <div class="debug-box" id="debugBox"></div>
+    <button class="run-btn" onclick="alert('추천 기능이 실행됩니다.')">추천받기</button>
   </div>
 
   <script>
-    'use strict';
-
-    let b64 = null;
-    let mime = null;
-
     function tc(el) { el.classList.toggle('selected'); }
-
-    function gc(id) {
-      return [...document.querySelectorAll(`#${id} .chip.selected`)].map(c => c.dataset.val);
-    }
-
-    function showErr(msg) {
-      const e = document.getElementById('errorBox');
-      e.textContent = msg;
-      e.classList.add('show');
-      e.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    function clearErr() {
-      document.getElementById('errorBox').classList.remove('show');
-    }
-
-    function setLoad(show, msg, step) {
-      document.getElementById('loading').classList.toggle('show', show);
-      if (show) {
-        document.getElementById('lMsg').textContent = msg;
-        document.getElementById('lStep').textContent = step || '';
-      }
-      document.getElementById('runBtn').disabled = show;
-      if (show) document.getElementById('resultSection').classList.remove('show');
-    }
-
-    function dbg(label, data) {
-      const b = document.getElementById('debugBox');
-      b.classList.add('show');
-      b.textContent = label + '\n' + (typeof data === 'string' ? data : JSON.stringify(data, null, 2));
-    }
-
-    function esc(s) {
-      return String(s ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-    }
-
-    function handleDragOver(e) {
-      e.preventDefault();
-    }
-    function handleDragLeave() {
-    }
-    function handleDrop(e) {
-      e.preventDefault();
-    }
-    function handleFileSelect(e) {
-      if (e.target.files[0]) pf(e.target.files[0]);
-    }
-
-    function pf(file) {
-      if (!file.type.startsWith('image/')) {
-        showErr('이미지 파일만 업로드할 수 있어요.');
-        return;
-      }
-      mime = file.type;
-      const r = new FileReader();
-      r.onload = ev => {
-        b64 = ev.target.result.split(',')[1];
-      };
-      r.readAsDataURL(file);
-    }
-
-    function run() {
-      clearErr();
-      document.getElementById('debugBox').textContent = '';
-      document.getElementById('debugBox').classList.remove('show');
-      showErr('현재 페이지는 preference.html로 재구성된 상태입니다. 기존의 식단표 업로드 기능은 제거되었습니다.');
+    
+    function addAllergy() {
+      const input = document.getElementById('newAllergy');
+      const val = input.value.trim();
+      if (!val) return;
+      const group = document.getElementById('allergies');
+      const chip = document.createElement('div');
+      chip.className = 'chip dc selected';
+      chip.dataset.val = val;
+      chip.textContent = val;
+      chip.onclick = function() { this.classList.toggle('selected'); };
+      group.appendChild(chip);
+      input.value = '';
     }
   </script>
 </body>
