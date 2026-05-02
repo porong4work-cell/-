@@ -109,6 +109,10 @@
         <div class="chip" data-val="중식" onclick="tc(this)">중식</div>
         <div class="chip" data-val="일식" onclick="tc(this)">일식</div>
       </div>
+      <div class="input-row">
+        <input class="form-input" id="newType" placeholder="직접 입력" style="flex:1;" />
+        <button class="btn-add" onclick="addCustom('likedTypes', 'newType', '', false)">확인</button>
+      </div>
 
       <!-- 좋아하는 메뉴 -->
       <div class="card-title" style="margin-top:20px;">좋아하는 메뉴</div>
@@ -221,8 +225,9 @@
     if (saved) {
       if (saved.likedTypes) {
         saved.likedTypes.forEach(val => {
-          const chip = [...document.querySelectorAll('#likedTypes .chip')].find(c => c.dataset.val === val);
-          if (chip) chip.classList.add('selected');
+          const existing = [...document.querySelectorAll('#likedTypes .chip')].find(c => c.dataset.val === val);
+          if (existing) existing.classList.add('selected');
+          else addChip('likedTypes', val, '', true, true);
         });
       }
       if (saved.likedCuisines) {
