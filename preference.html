@@ -3,35 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Preference</title>
+  <title>메뉴 선호도 설정</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    :root{ --blue:#3182ce; --blue-light:#e8f0fd; --blue-mid:#4a90e2; --red:#dc2626; --red-light:#fee2e2; --amber:#d97706; --amber-light:#fef3c7; --g50:#f8fafc; --g200:#e2e8f0; --g400:#94a3b8; --g500:#64748b; --g700:#334155; --g900:#0f172a; --white:#fff; --radius:12px; --rsm:8px; --shadow:0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06); }
-    body { font-family: 'Noto Sans KR', sans-serif; background: var(#ffffff); color: var(--g900); min-height: 100vh; padding-bottom: 40px; }
-    .page { max-width: 720px; margin: 0 auto; padding: 28px 16px; }
-    .page-header { margin-bottom: 24px; }
-    .page-header h1 { font-size: 22px; font-weight: 700; }
-    .page-header p { font-size: 14px; color: var(--g500); margin-top: 4px; }
+    :root{ --blue:#3182ce; --blue-light:#e8f0fd; --red:#dc2626; --red-light:#fee2e2; --g50:#f8fafc; --g200:#e2e8f0; --g400:#94a3b8; --g500:#64748b; --g700:#334155; --g900:#0f172a; --white:#fff; --radius:12px; --rsm:8px; --shadow:0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06); }
+    body { font-family: 'Noto Sans KR', -apple-system, sans-serif; background: #f5f5f5; color: var(--g900); min-height: 100vh; padding-bottom: 40px; }
+
+    .page-header {
+      background: #fff;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .page-header h2 { font-size: 20px; font-weight: 500; }
+    .home-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; }
+
+    .page { max-width: 720px; margin: 0 auto; padding: 20px 16px; }
+    .page-desc { font-size: 14px; color: var(--g500); margin-bottom: 20px; }
+
     .card { background: var(--white); border: 1px solid var(--g200); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
     .card-title { font-size: 14px; font-weight: 700; color: var(--g700); margin-bottom: 14px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
     .form-label { font-size: 12px; font-weight: 500; color: var(--g500); }
     .form-input { height: 38px; padding: 0 10px; border: 1px solid var(--g200); border-radius: var(--rsm); font-size: 13px; background: var(--g50); outline: none; }
-    .input-row { display: flex; gap: 8px; margin-top: 4px; }
+    .input-row { display: flex; gap: 8px; margin-top: 8px; }
     .btn-add { padding: 0 16px; background: var(--blue); color: var(--white); border: none; border-radius: var(--rsm); font-size: 12px; cursor: pointer; }
     .chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
     .chip { padding: 5px 12px; border: 1px solid var(--g200); border-radius: 99px; font-size: 12px; font-weight: 500; color: var(--g500); cursor: pointer; background: var(--white); }
     .chip.selected { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
     .chip.dc.selected { background: var(--red-light); border-color: var(--red); color: var(--red); }
     .run-btn { width: 100%; height: 48px; background: var(--blue); color: var(--white); border: none; border-radius: var(--rsm); font-size: 15px; font-weight: 700; cursor: pointer; }
+    .run-btn:active { opacity: 0.85; }
   </style>
 </head>
 <body>
+
+  <div class="page-header">
+    <h2>메뉴 선호도 설정</h2>
+    <button class="home-btn" onclick="location.href='index.html'">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H15v-5h-6v5H4a1 1 0 0 1-1-1V9.5z"/>
+      </svg>
+    </button>
+  </div>
+
   <div class="page">
-    <div class="page-header">
-      <h1>메뉴 선호도 설정</h1>
-      <p>메뉴 추천에 반영될 개인 선호를 설정해주세요.</p>
-    </div>
+    <p class="page-desc">메뉴 추천에 반영될 개인 선호를 설정해주세요.</p>
 
     <div class="card">
       <div class="card-title">선호 유형</div>
@@ -41,7 +60,7 @@
         <div class="chip" data-val="중식" onclick="tc(this)">중식</div>
         <div class="chip" data-val="일식" onclick="tc(this)">일식</div>
       </div>
-      
+
       <div class="card-title" style="margin-top:20px;">좋아하는 메뉴</div>
       <div class="chip-group" id="likedCuisines">
         <div class="chip" data-val="밥" onclick="tc(this)">밥</div>
@@ -70,24 +89,76 @@
       </div>
     </div>
 
-    <button class="run-btn" onclick="alert('저장되었습니다.')">저장</button>
+    <button class="run-btn" onclick="savePreference()">저장</button>
   </div>
 
   <script>
+    // 저장된 선호도 불러오기
+    const saved = JSON.parse(localStorage.getItem('preference')) || null;
+    if (saved) {
+      // 선호 유형
+      if (saved.likedTypes) {
+        saved.likedTypes.forEach(val => {
+          const chip = [...document.querySelectorAll('#likedTypes .chip')].find(c => c.dataset.val === val);
+          if (chip) chip.classList.add('selected');
+        });
+      }
+      // 좋아하는 메뉴
+      if (saved.likedCuisines) {
+        saved.likedCuisines.forEach(val => {
+          const existing = [...document.querySelectorAll('#likedCuisines .chip')].find(c => c.dataset.val === val);
+          if (existing) {
+            existing.classList.add('selected');
+          } else {
+            addChip('likedCuisines', val, '', true);
+          }
+        });
+      }
+      // 싫어하는 메뉴
+      if (saved.disliked) document.getElementById('disliked').value = saved.disliked;
+      // 알레르기
+      if (saved.allergies) {
+        saved.allergies.forEach(val => {
+          const existing = [...document.querySelectorAll('#allergies .chip')].find(c => c.dataset.val === val);
+          if (existing) {
+            existing.classList.add('selected');
+          } else {
+            addChip('allergies', val, 'dc', true);
+          }
+        });
+      }
+    }
+
     function tc(el) { el.classList.toggle('selected'); }
-    
-    function addCustom(groupId, inputId, extraClass = '') {
-      const input = document.getElementById(inputId);
-      const val = input.value.trim();
-      if (!val) return;
+
+    function addChip(groupId, val, extraClass, selected) {
       const group = document.getElementById(groupId);
       const chip = document.createElement('div');
-      chip.className = `chip ${extraClass} selected`;
+      chip.className = `chip ${extraClass}${selected ? ' selected' : ''}`;
       chip.dataset.val = val;
       chip.textContent = val;
       chip.onclick = function() { this.classList.toggle('selected'); };
       group.appendChild(chip);
+    }
+
+    function addCustom(groupId, inputId, extraClass = '') {
+      const input = document.getElementById(inputId);
+      const val = input.value.trim();
+      if (!val) return;
+      addChip(groupId, val, extraClass, true);
       input.value = '';
+    }
+
+    function savePreference() {
+      const likedTypes = [...document.querySelectorAll('#likedTypes .chip.selected')].map(c => c.dataset.val);
+      const likedCuisines = [...document.querySelectorAll('#likedCuisines .chip.selected')].map(c => c.dataset.val);
+      const disliked = document.getElementById('disliked').value.trim();
+      const allergies = [...document.querySelectorAll('#allergies .chip.selected')].map(c => c.dataset.val);
+
+      const data = { likedTypes, likedCuisines, disliked, allergies };
+      localStorage.setItem('preference', JSON.stringify(data));
+      alert('저장되었습니다.');
+      location.href = 'menu.html';
     }
   </script>
 </body>
