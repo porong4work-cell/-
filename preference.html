@@ -7,7 +7,7 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root{ --blue:#3182ce; --blue-light:#e8f0fd; --blue-mid:#4a90e2; --red:#dc2626; --red-light:#fee2e2; --amber:#d97706; --amber-light:#fef3c7; --g50:#f8fafc; --g200:#e2e8f0; --g400:#94a3b8; --g500:#64748b; --g700:#334155; --g900:#0f172a; --white:#fff; --radius:12px; --rsm:8px; --shadow:0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06); }
-    body { font-family: 'Noto Sans KR', sans-serif; background: var(--g50); color: var(--g900); min-height: 100vh; padding-bottom: 40px; }
+    body { font-family: 'Noto Sans KR', sans-serif; background: var(#ffffff); color: var(--g900); min-height: 100vh; padding-bottom: 40px; }
     .page { max-width: 720px; margin: 0 auto; padding: 28px 16px; }
     .page-header { margin-bottom: 24px; }
     .page-header h1 { font-size: 22px; font-weight: 700; }
@@ -30,7 +30,7 @@
   <div class="page">
     <div class="page-header">
       <h1>메뉴 선호도 설정</h1>
-      <p>식단과 개인 선호를 바탕으로 추천 결과를 확인하세요.</p>
+      <p>메뉴 추천에 반영될 개인 선호를 설정해주세요.</p>
     </div>
 
     <div class="card">
@@ -70,7 +70,7 @@
       </div>
     </div>
 
-    <button class="run-btn" onclick="alert('추천 기능이 실행됩니다.')">추천받기</button>
+    <button class="run-btn" onclick="alert('저장되었습니다.')">저장</button>
   </div>
 
   <script>
