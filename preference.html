@@ -1,509 +1,520 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IDP</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Preference</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --blue: #1A6FD4; --blue-light: #E8F0FD; --blue-mid: #4A90E2;
-      --green: #16A34A; --red: #DC2626; --red-light: #FEE2E2;
-      --amber: #D97706; --amber-light: #FEF3C7;
-      --g50: #F8FAFC; --g100: #F1F5F9; --g200: #E2E8F0; --g300: #CBD5E1;
-      --g400: #94A3B8; --g500: #64748B; --g700: #334155; --g900: #0F172A;
-      --white: #fff; --radius: 12px; --rsm: 8px;
-      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root{
+      --blue:#3182ce;
+      --blue-light:#e8f0fd;
+      --blue-mid:#4a90e2;
+      --green:#16a34a;
+      --red:#dc2626;
+      --red-light:#fee2e2;
+      --amber:#d97706;
+      --amber-light:#fef3c7;
+      --g50:#f8fafc;
+      --g100:#f1f5f9;
+      --g200:#e2e8f0;
+      --g300:#cbd5e1;
+      --g400:#94a3b8;
+      --g500:#64748b;
+      --g700:#334155;
+      --g900:#0f172a;
+      --white:#fff;
+      --radius:12px;
+      --rsm:8px;
+      --shadow:0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
     }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Noto Sans KR', sans-serif; background: var(--g50); color: var(--g900); min-height: 100vh; padding-bottom: 80px; }
-
-    /* Nav */
-    .nav { position: sticky; top: 0; z-index: 100; background: var(--white); border-bottom: 1px solid var(--g200); height: 56px; display: flex; align-items: center; padding: 0 20px; gap: 8px; }
-    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: .06em; color: var(--blue); text-decoration: none; margin-right: 8px; }
-    .nav-links { display: flex; gap: 4px; flex: 1; }
-    .nav-links a { font-size: 13px; font-weight: 500; color: var(--g500); text-decoration: none; padding: 6px 12px; border-radius: var(--rsm); transition: background .15s, color .15s; }
-    .nav-links a:hover { background: var(--g100); color: var(--g900); }
-    .nav-links a.active { background: var(--blue-light); color: var(--blue); }
-
-    /* Layout */
-    .page { max-width: 720px; margin: 0 auto; padding: 28px 16px 0; }
-    .page-header { margin-bottom: 24px; }
-    .page-header h1 { font-size: 22px; font-weight: 700; }
-    .page-header p { font-size: 14px; color: var(--g500); margin-top: 4px; }
-
-    /* Card */
-    .card { background: var(--white); border: 1px solid var(--g200); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); }
-    .card-title { font-size: 14px; font-weight: 700; color: var(--g700); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-    .step-badge { width: 22px; height: 22px; border-radius: 50%; background: var(--blue); color: var(--white); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-
-    /* Upload */
-    .upload-zone { border: 2px dashed var(--g300); border-radius: var(--radius); padding: 32px 16px; text-align: center; cursor: pointer; transition: border-color .2s, background .2s; position: relative; }
-    .upload-zone:hover, .upload-zone.drag-over { border-color: var(--blue); background: var(--blue-light); }
-    .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-    .upload-icon { font-size: 32px; margin-bottom: 8px; }
-    .upload-label { font-size: 14px; font-weight: 500; color: var(--g700); }
-    .upload-sub { font-size: 12px; color: var(--g400); margin-top: 4px; }
-    .upload-preview { margin-top: 12px; position: relative; }
-    .upload-preview img { width: 100%; max-height: 220px; object-fit: cover; border-radius: var(--rsm); display: block; }
-    .upload-clear { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,.55); color: #fff; border: none; border-radius: 50%; width: 26px; height: 26px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-    /* Form */
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group.full { grid-column: 1 / -1; }
-    .form-label { font-size: 12px; font-weight: 500; color: var(--g500); }
-    .form-input { height: 38px; padding: 0 10px; border: 1px solid var(--g200); border-radius: var(--rsm); font-size: 13px; font-family: 'Noto Sans KR', sans-serif; background: var(--g50); color: var(--g900); outline: none; transition: border-color .15s; }
-    .form-input:focus { border-color: var(--blue); background: var(--white); }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--g50);
+      color: var(--g900);
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 28px 16px 0;
+    }
+    .page-header {
+      margin-bottom: 24px;
+    }
+    .page-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .page-header p {
+      font-size: 14px;
+      color: var(--g500);
+      margin-top: 4px;
+    }
+    .card {
+      background: var(--white);
+      border: 1px solid var(--g200);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--g700);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .step-badge {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+    .form-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--g500);
+    }
+    .form-input {
+      height: 38px;
+      padding: 0 10px;
+      border: 1px solid var(--g200);
+      border-radius: var(--rsm);
+      font-size: 13px;
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--g50);
+      color: var(--g900);
+      outline: none;
+      transition: border-color .15s, background .15s;
+    }
+    .form-input:focus {
+      border-color: var(--blue);
+      background: var(--white);
+    }
     .form-input::placeholder { color: var(--g400); }
 
-    /* Chips */
-    .chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
-    .chip { padding: 5px 12px; border: 1px solid var(--g200); border-radius: 99px; font-size: 12px; font-weight: 500; color: var(--g500); cursor: pointer; user-select: none; transition: all .15s; background: var(--white); }
-    .chip:hover { border-color: var(--blue-mid); color: var(--blue); }
-    .chip.selected { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
-    .chip.dc.selected { background: var(--red-light); border-color: var(--red); color: var(--red); }
-    .chip.wc.selected { background: var(--amber-light); border-color: var(--amber); color: var(--amber); }
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip {
+      padding: 5px 12px;
+      border: 1px solid var(--g200);
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--g500);
+      cursor: pointer;
+      user-select: none;
+      transition: all .15s;
+      background: var(--white);
+    }
+    .chip:hover {
+      border-color: var(--blue-mid);
+      color: var(--blue);
+    }
+    .chip.selected {
+      background: var(--blue-light);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+    .chip.dc.selected {
+      background: var(--red-light);
+      border-color: var(--red);
+      color: var(--red);
+    }
+    .chip.wc.selected {
+      background: var(--amber-light);
+      border-color: var(--amber);
+      color: var(--amber);
+    }
 
-    /* Run button */
-    .run-btn { width: 100%; height: 48px; background: var(--blue); color: var(--white); border: none; border-radius: var(--rsm); font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity .15s, transform .1s; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Noto Sans KR', sans-serif; margin-bottom: 16px; }
+    .run-btn {
+      width: 100%;
+      height: 48px;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      border-radius: var(--rsm);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s, transform .1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Noto Sans KR', sans-serif;
+      margin-bottom: 16px;
+    }
     .run-btn:hover:not(:disabled) { opacity: .88; }
     .run-btn:active:not(:disabled) { transform: scale(.98); }
-    .run-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .run-btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
 
-    /* Loading */
-    .loading { display: none; text-align: center; padding: 36px 0; }
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 36px 0;
+    }
     .loading.show { display: block; }
-    .spinner { width: 36px; height: 36px; margin: 0 auto 12px; border: 3px solid var(--g200); border-top-color: var(--blue); border-radius: 50%; animation: spin .7s linear infinite; }
+    .spinner {
+      width: 36px;
+      height: 36px;
+      margin: 0 auto 12px;
+      border: 3px solid var(--g200);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-msg { font-size: 13px; color: var(--g500); }
-    .loading-step { font-size: 11px; color: var(--g400); margin-top: 4px; }
+    .loading-msg {
+      font-size: 13px;
+      color: var(--g500);
+    }
+    .loading-step {
+      font-size: 11px;
+      color: var(--g400);
+      margin-top: 4px;
+    }
 
-    /* Error */
-    .error-box { display: none; background: var(--red-light); border: 1px solid #FCA5A5; border-radius: var(--rsm); padding: 12px 14px; font-size: 13px; color: var(--red); margin-bottom: 12px; line-height: 1.6; white-space: pre-wrap; word-break: break-all; }
+    .error-box {
+      display: none;
+      background: var(--red-light);
+      border: 1px solid #fca5a5;
+      border-radius: var(--rsm);
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--red);
+      margin-bottom: 12px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
     .error-box.show { display: block; }
 
-    /* Results */
-    .result-section { display: none; }
-    .result-section.show { display: block; }
-    .result-header { background: linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%); color: var(--white); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 12px; }
-    .result-header h2 { font-size: 16px; font-weight: 700; }
-    .result-header .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-    .result-badge { background: rgba(255,255,255,.2); border-radius: 99px; padding: 3px 10px; font-size: 11px; font-weight: 500; }
-    .day-card { background: var(--white); border: 1px solid var(--g200); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow); animation: fadeUp .3s ease both; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .day-header { padding: 12px 16px; background: var(--g50); border-bottom: 1px solid var(--g200); font-size: 14px; font-weight: 700; color: var(--g700); }
-    .meal-row { padding: 12px 16px; border-bottom: 1px solid var(--g100); display: flex; align-items: flex-start; gap: 12px; }
-    .meal-row:last-child { border-bottom: none; }
-    .meal-time-badge { flex-shrink: 0; width: 42px; font-size: 12px; font-weight: 700; text-align: center; padding: 3px 0; border-radius: var(--rsm); }
-    .meal-time-badge.bk { background: #FFF7ED; color: #C2410C; }
-    .meal-time-badge.ln { background: #F0FDF4; color: #15803D; }
-    .meal-time-badge.dn { background: #EFF6FF; color: #1D4ED8; }
-    .meal-content { flex: 1; min-width: 0; }
-    .meal-status-ok { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--green); margin-bottom: 4px; }
-    .meal-status-ng { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--red); margin-bottom: 4px; }
-    .course-badge { display: inline-block; padding: 2px 8px; background: var(--blue-light); color: var(--blue); border-radius: 99px; font-size: 11px; font-weight: 700; margin-left: 6px; }
-    .meal-menu { font-size: 13px; color: var(--g700); line-height: 1.6; }
-    .meal-menu.ng { color: var(--g400); font-style: italic; }
-    .meal-reason { font-size: 11px; color: var(--g400); margin-top: 4px; line-height: 1.5; }
-    .debug-box { display: none; background: #1e1e2e; border-radius: var(--rsm); padding: 12px; margin-top: 12px; font-family: monospace; font-size: 11px; color: #cdd6f4; white-space: pre-wrap; max-height: 240px; overflow-y: auto; word-break: break-all; }
+    .result-section {
+      display: none;
+    }
+    .result-section.show {
+      display: block;
+    }
+    .result-header {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%);
+      color: var(--white);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 12px;
+    }
+    .result-header h2 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .result-header .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .result-badge {
+      background: rgba(255,255,255,.2);
+      border-radius: 99px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .day-card {
+      background: var(--white);
+      border: 1px solid var(--g200);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .day-header {
+      padding: 12px 16px;
+      background: var(--g50);
+      border-bottom: 1px solid var(--g200);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--g700);
+    }
+    .meal-row {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--g100);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .meal-row:last-child {
+      border-bottom: none;
+    }
+    .meal-time-badge {
+      flex-shrink: 0;
+      width: 42px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      padding: 3px 0;
+      border-radius: var(--rsm);
+    }
+    .meal-time-badge.bk { background: #fff7ed; color: #c2410c; }
+    .meal-time-badge.ln { background: #f0fdf4; color: #15803d; }
+    .meal-time-badge.dn { background: #eff6ff; color: #1d4ed8; }
+    .meal-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .meal-status-ok {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 4px;
+    }
+    .meal-status-ng {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--red);
+      margin-bottom: 4px;
+    }
+    .course-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--blue-light);
+      color: var(--blue);
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 6px;
+    }
+    .meal-menu {
+      font-size: 13px;
+      color: var(--g700);
+      line-height: 1.6;
+    }
+    .meal-menu.ng {
+      color: var(--g400);
+      font-style: italic;
+    }
+    .meal-reason {
+      font-size: 11px;
+      color: var(--g400);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+    .debug-box {
+      display: none;
+      background: #1e1e2e;
+      border-radius: var(--rsm);
+      padding: 12px;
+      margin-top: 12px;
+      font-family: monospace;
+      font-size: 11px;
+      color: #cdd6f4;
+      white-space: pre-wrap;
+      max-height: 240px;
+      overflow-y: auto;
+      word-break: break-all;
+    }
     .debug-box.show { display: block; }
 
     @media (max-width: 500px) {
       .form-grid { grid-template-columns: 1fr; }
-      .nav-links a { font-size: 12px; padding: 6px 8px; }
     }
   </style>
 </head>
 <body>
-
-<nav class="nav">
-  <a class="nav-logo" href="#">IDP</a>
-  <div class="nav-links">
-    <a href="#">세탁실 현황</a>
-    <a href="#" class="active">메뉴 추천</a>
-    <a href="#">내 이용 현황</a>
-    <a href="#">마이 페이지</a>
-  </div>
-</nav>
-
-<div class="page">
-  <div class="page-header">
-    <h1>🍽️ AI 메뉴 추천</h1>
-    <p>이번 주 식단표 이미지를 업로드하면 AI가 맞춤 메뉴를 추천해드려요</p>
-  </div>
-
-  <!-- STEP 1 -->
-  <div class="card">
-    <div class="card-title">
-      <span class="step-badge">1</span>
-      이번 주 식단표 이미지 업로드
+  <div class="page">
+    <div class="page-header">
+      <h1>Preference</h1>
+      <p>식단과 개인 선호를 바탕으로 추천 결과를 확인하세요.</p>
     </div>
-    <div class="upload-zone" id="uploadZone"
-         ondragover="handleDragOver(event)"
-         ondragleave="handleDragLeave()"
-         ondrop="handleDrop(event)">
-      <input type="file" id="imageInput" accept="image/*" onchange="handleFileSelect(event)">
-      <div class="upload-icon">🖼️</div>
-      <div class="upload-label">이미지를 드래그하거나 클릭해서 선택</div>
-      <div class="upload-sub">PNG · JPG · WEBP 지원</div>
-    </div>
-    <div class="upload-preview" id="previewBox" style="display:none">
-      <img id="previewImg" src="" alt="미리보기">
-      <button class="upload-clear" onclick="clearImage()">✕</button>
-    </div>
-  </div>
 
-  <!-- STEP 2 -->
-  <div class="card">
-    <div class="card-title">
-      <span class="step-badge">2</span>
-      내 정보 입력
-    </div>
-    <div class="form-grid">
-      <div class="form-group full">
-        <div class="form-label">이름</div>
-        <input class="form-input" id="userName" placeholder="홍길동">
-      </div>
-      <div class="form-group full">
-        <div class="form-label">좋아하는 식사 종류</div>
-        <div class="chip-group" id="likedTypes">
-          <div class="chip" data-val="밥" onclick="tc(this)">🍚 밥</div>
-          <div class="chip" data-val="면" onclick="tc(this)">🍜 면</div>
-          <div class="chip" data-val="빵" onclick="tc(this)">🍞 빵</div>
-          <div class="chip" data-val="떡" onclick="tc(this)">🍡 떡</div>
-          <div class="chip" data-val="기타" onclick="tc(this)">기타</div>
+    <div class="card">
+      <div class="card-title"><span class="step-badge">1</span>내 정보 입력</div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <div class="form-label">선호 유형</div>
+          <div class="chip-group" id="likedTypes">
+            <div class="chip" data-val="한식" onclick="tc(this)">한식</div>
+            <div class="chip" data-val="양식" onclick="tc(this)">양식</div>
+            <div class="chip" data-val="중식" onclick="tc(this)">중식</div>
+            <div class="chip" data-val="일식" onclick="tc(this)">일식</div>
+            <div class="chip" data-val="기타" onclick="tc(this)">기타</div>
+          </div>
         </div>
-      </div>
-      <div class="form-group full">
-        <div class="form-label">좋아하는 국가별 음식</div>
-        <div class="chip-group" id="likedCuisines">
-          <div class="chip" data-val="한식" onclick="tc(this)">🇰🇷 한식</div>
-          <div class="chip" data-val="양식" onclick="tc(this)">🍝 양식</div>
-          <div class="chip" data-val="중식" onclick="tc(this)">🥡 중식</div>
-          <div class="chip" data-val="일식" onclick="tc(this)">🍱 일식</div>
-          <div class="chip" data-val="동남아식" onclick="tc(this)">🌿 동남아식</div>
+
+        <div class="form-group full">
+          <div class="form-label">좋아하는 메뉴</div>
+          <div class="chip-group" id="likedCuisines">
+            <div class="chip" data-val="밥" onclick="tc(this)">밥</div>
+            <div class="chip" data-val="면" onclick="tc(this)">면</div>
+            <div class="chip" data-val="국" onclick="tc(this)">국</div>
+            <div class="chip" data-val="고기" onclick="tc(this)">고기</div>
+            <div class="chip" data-val="채소" onclick="tc(this)">채소</div>
+          </div>
         </div>
-      </div>
-      <div class="form-group full">
-        <div class="form-label">싫어하는 재료 / 메뉴 (쉼표로 구분)</div>
-        <input class="form-input" id="disliked" placeholder="고수, 민트, 해산물">
-      </div>
-      <div class="form-group full">
-        <div class="form-label">⚠️ 알레르기 재료</div>
-        <div class="chip-group" id="allergies">
-          <div class="chip dc" data-val="난류"   onclick="tc(this)">난류</div>
-          <div class="chip dc" data-val="우유"   onclick="tc(this)">우유</div>
-          <div class="chip dc" data-val="메밀"   onclick="tc(this)">메밀</div>
-          <div class="chip dc" data-val="땅콩"   onclick="tc(this)">땅콩</div>
-          <div class="chip dc" data-val="대두"   onclick="tc(this)">대두</div>
-          <div class="chip dc" data-val="밀"     onclick="tc(this)">밀</div>
-          <div class="chip dc" data-val="생선류" onclick="tc(this)">생선류</div>
-          <div class="chip dc" data-val="게"     onclick="tc(this)">게</div>
-          <div class="chip dc" data-val="새우"   onclick="tc(this)">새우</div>
-          <div class="chip dc" data-val="돼지고기" onclick="tc(this)">돼지고기</div>
-          <div class="chip dc" data-val="복숭아" onclick="tc(this)">복숭아</div>
-          <div class="chip dc" data-val="토마토" onclick="tc(this)">토마토</div>
-          <div class="chip dc" data-val="호두"   onclick="tc(this)">호두</div>
-          <div class="chip dc" data-val="닭고기" onclick="tc(this)">닭고기</div>
-          <div class="chip dc" data-val="쇠고기" onclick="tc(this)">쇠고기</div>
-          <div class="chip dc" data-val="오징어" onclick="tc(this)">오징어</div>
-          <div class="chip dc" data-val="조개류" onclick="tc(this)">조개류</div>
+
+        <div class="form-group full">
+          <div class="form-label">싫어하는 메뉴</div>
+          <input class="form-input" id="disliked" placeholder="예: 매운 음식, 생선" />
         </div>
-      </div>
-      <div class="form-group full">
-        <div class="form-label">🕐 수업/연강으로 식사 불가한 시간대</div>
-        <div class="chip-group" id="blockedTimes">
-          <div class="chip wc" data-val="아침" onclick="tc(this)">아침</div>
-          <div class="chip wc" data-val="점심" onclick="tc(this)">점심</div>
-          <div class="chip wc" data-val="저녁" onclick="tc(this)">저녁</div>
+
+        <div class="form-group full">
+          <div class="form-label">알레르기</div>
+          <div class="chip-group" id="allergies">
+            <div class="chip dc" data-val="우유" onclick="tc(this)">우유</div>
+            <div class="chip dc" data-val="계란" onclick="tc(this)">계란</div>
+            <div class="chip dc" data-val="땅콩" onclick="tc(this)">땅콩</div>
+            <div class="chip dc" data-val="밀" onclick="tc(this)">밀</div>
+            <div class="chip dc" data-val="새우" onclick="tc(this)">새우</div>
+          </div>
+        </div>
+
+        <div class="form-group full">
+          <div class="form-label">피하고 싶은 시간대</div>
+          <div class="chip-group" id="blockedTimes">
+            <div class="chip wc" data-val="조식" onclick="tc(this)">조식</div>
+            <div class="chip wc" data-val="중식" onclick="tc(this)">중식</div>
+            <div class="chip wc" data-val="석식" onclick="tc(this)">석식</div>
+          </div>
         </div>
       </div>
     </div>
+
+    <div class="error-box" id="errorBox"></div>
+
+    <button class="run-btn" id="runBtn" onclick="run()">추천받기</button>
+
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <div class="loading-msg" id="lMsg">분석 중...</div>
+      <div class="loading-step" id="lStep"></div>
+    </div>
+
+    <div class="result-section" id="resultSection">
+      <div class="result-header" id="resultHeader"></div>
+      <div id="resultCards"></div>
+    </div>
+
+    <div class="debug-box" id="debugBox"></div>
   </div>
 
-  <div class="error-box" id="errorBox"></div>
-  <button class="run-btn" id="runBtn" onclick="run()">
-    <span>✨</span> AI 메뉴 추천받기
-  </button>
+  <script>
+    'use strict';
 
-  <div class="loading" id="loading">
-    <div class="spinner"></div>
-    <div class="loading-msg" id="lMsg">처리 중...</div>
-    <div class="loading-step" id="lStep"></div>
-  </div>
+    let b64 = null;
+    let mime = null;
 
-  <div class="result-section" id="resultSection">
-    <div class="result-header" id="resultHeader"></div>
-    <div id="resultCards"></div>
-  </div>
+    function tc(el) { el.classList.toggle('selected'); }
 
-  <div class="debug-box" id="debugBox"></div>
-</div>
+    function gc(id) {
+      return [...document.querySelectorAll(`#${id} .chip.selected`)].map(c => c.dataset.val);
+    }
 
-<script>
-'use strict';
+    function showErr(msg) {
+      const e = document.getElementById('errorBox');
+      e.textContent = msg;
+      e.classList.add('show');
+      e.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 
-// ================================================================
-// ★ 핵심 변경: fetch() 대신 google.script.run 사용
-//   → CORS 문제 / POST redirect body 소실 문제 완전 해결
-// ================================================================
+    function clearErr() {
+      document.getElementById('errorBox').classList.remove('show');
+    }
 
-let b64 = null, mime = null;
-
-// --- 파일 업로드 핸들러 ---
-function handleDragOver(e) {
-  e.preventDefault();
-  document.getElementById('uploadZone').classList.add('drag-over');
-}
-function handleDragLeave() {
-  document.getElementById('uploadZone').classList.remove('drag-over');
-}
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('uploadZone').classList.remove('drag-over');
-  if (e.dataTransfer.files[0]) pf(e.dataTransfer.files[0]);
-}
-function handleFileSelect(e) {
-  if (e.target.files[0]) pf(e.target.files[0]);
-}
-function pf(file) {
-  if (!file.type.startsWith('image')) { showErr('이미지 파일만 업로드할 수 있습니다.'); return; }
-  mime = file.type;
-  const r = new FileReader();
-  r.onload = ev => {
-    b64 = ev.target.result.split(',')[1];
-    document.getElementById('previewImg').src = ev.target.result;
-    document.getElementById('previewBox').style.display = 'block';
-    clearErr();
-  };
-  r.readAsDataURL(file);
-}
-function clearImage() {
-  b64 = null; mime = null;
-  document.getElementById('imageInput').value = '';
-  document.getElementById('previewBox').style.display = 'none';
-}
-
-// --- UI 헬퍼 ---
-function tc(el) { el.classList.toggle('selected'); }
-function gc(id) {
-  return [...document.querySelectorAll('#' + id + ' .chip.selected')].map(c => c.dataset.val);
-}
-function showErr(msg) {
-  const e = document.getElementById('errorBox');
-  e.textContent = msg; e.classList.add('show');
-  e.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-function clearErr() { document.getElementById('errorBox').classList.remove('show'); }
-function setLoad(show, msg, step) {
-  document.getElementById('loading').classList.toggle('show', show);
-  if (show) {
-    document.getElementById('lMsg').textContent = msg;
-    document.getElementById('lStep').textContent = step || '';
-  }
-  document.getElementById('runBtn').disabled = show;
-  if (show) document.getElementById('resultSection').classList.remove('show');
-}
-function dbg(l, d) {
-  const b = document.getElementById('debugBox');
-  b.classList.add('show');
-  b.textContent = l + (typeof d === 'string' ? d : JSON.stringify(d, null, 2));
-}
-function esc(s) {
-  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ================================================================
-// google.script.run → Promise 래퍼
-// HtmlService로 서빙된 페이지에서만 동작 (fetch 불필요)
-// ================================================================
-function gasCall(fnName) {
-  const args = Array.prototype.slice.call(arguments, 1);
-  return new Promise(function(resolve, reject) {
-    const runner = google.script.run
-      .withSuccessHandler(resolve)
-      .withFailureHandler(function(err) {
-        reject(new Error(err.message || String(err)));
-      });
-    runner[fnName].apply(runner, args);
-  });
-}
-
-// --- JSON 파서 (Gemini가 마크다운 코드블록 감쌀 경우 대비) ---
-function exJson(raw) {
-  let s = raw.trim().replace(/^```json/i, '').replace(/^```/, '').replace(/```$/, '').trim();
-  const a = s.indexOf('{'), b = s.lastIndexOf('}');
-  if (a < 0 || b < 0) throw new Error('JSON 블록을 찾을 수 없습니다.\n' + s.slice(0, 200));
-  try { return JSON.parse(s.slice(a, b + 1)); }
-  catch (e) { throw new Error('JSON 파싱 오류: ' + e.message + '\n' + s.slice(0, 300)); }
-}
-
-// --- 알레르기/싫어요 필터링 → 후보 빌드 ---
-function buildCandidates(menu, profile) {
-  const al = new Set(profile['알레르기']);
-  const dl = profile['싫어하는_재료'];
-  const bl = new Set(profile['먹을수없는_시간대']);
-  const out = {};
-
-  for (const day of Object.keys(menu)) {
-    out[day] = {};
-    for (const meal of ['아침', '점심', '저녁']) {
-      const d = menu[day][meal];
-      if (d === null || d === undefined) { out[day][meal] = { status: '미운영' }; continue; }
-      if (bl.has(meal)) { out[day][meal] = { status: '시간표_제외' }; continue; }
-
-      if (meal === '점심') {
-        const lun = {};
-        const rm = d['식간라면'];
-        lun['식간라면'] = rm
-          ? Object.assign({}, rm, { status: ah(rm, al).length > 0 ? '알레르기_제외' : 'ok' })
-          : null;
-        for (const c of ['A코스', 'B코스']) {
-          const cd = d[c];
-          if (!cd) { lun[c] = null; continue; }
-          const h = ah(cd, al);
-          lun[c] = Object.assign({}, cd, {
-            status: h.length > 0 ? '알레르기_제외' : 'ok',
-            알레르기_hit: h.length > 0 ? h.join(', ') : null,
-            싫어요_hit: dh(cd, dl).length > 0 ? dh(cd, dl).join(', ') : null
-          });
-        }
-        out[day][meal] = lun;
-      } else {
-        const h = ah(d, al);
-        out[day][meal] = Object.assign({}, d, {
-          status: h.length > 0 ? '알레르기_제외' : 'ok',
-          알레르기_hit: h.length > 0 ? h.join(', ') : null,
-          싫어요_hit: dh(d, dl).length > 0 ? dh(d, dl).join(', ') : null
-        });
+    function setLoad(show, msg, step) {
+      document.getElementById('loading').classList.toggle('show', show);
+      if (show) {
+        document.getElementById('lMsg').textContent = msg;
+        document.getElementById('lStep').textContent = step || '';
       }
+      document.getElementById('runBtn').disabled = show;
+      if (show) document.getElementById('resultSection').classList.remove('show');
     }
-  }
-  return out;
-}
-function ah(info, set) { return (info['알레르기_재료'] || []).filter(function(a) { return set.has(a); }); }
-function dh(info, arr) { const t = (info['메뉴'] || []).join(' '); return arr.filter(function(d) { return t.includes(d); }); }
 
-// --- 추천 결과 파서 ---
-function parseResult(raw) {
-  const out = {};
-  const days = ['월요일','화요일','수요일','목요일','금요일','토요일','일요일'];
-  const meals = ['아침','점심','저녁'];
-  for (const block of raw.split('---')) {
-    const t = block.trim();
-    if (!t) continue;
-    const h = t.match(/\[([^\]]+)-([^\]]+)\]/);
-    if (!h) continue;
-    const day = h[1].trim(), meal = h[2].trim();
-    if (!days.includes(day) || !meals.includes(meal)) continue;
-    const f = {};
-    for (const line of t.split('\n')) {
-      const m = line.match(/^([^:]+):\s*(.*)/);
-      if (m) f[m[1].trim()] = m[2].trim();
+    function dbg(label, data) {
+      const b = document.getElementById('debugBox');
+      b.classList.add('show');
+      b.textContent = label + '\n' + (typeof data === 'string' ? data : JSON.stringify(data, null, 2));
     }
-    const ri = t.indexOf('추천이유');
-    if (ri !== -1) f['추천이유'] = t.slice(ri + 5).trim().replace(/^:\s*/, '');
-    if (!f['추천여부']) continue;
-    if (!out[day]) out[day] = {};
-    out[day][meal] = { yn: f['추천여부'], menu: f['추천메뉴'], course: f['추천코스'], reason: f['추천이유'] };
-  }
-  return out;
-}
 
-// --- 결과 렌더링 ---
-function renderResults(parsed, profile, dayList) {
-  if (!parsed || !Object.keys(parsed).length) { showErr('결과를 파싱할 수 없습니다.'); return; }
-  const alStr = profile['알레르기'].length ? '알레르기: ' + profile['알레르기'].join(', ') : '알레르기 없음';
-  const blStr = profile['먹을수없는_시간대'].length ? '불가: ' + profile['먹을수없는_시간대'].join(', ') : '';
-  document.getElementById('resultHeader').innerHTML =
-    '<h2>✨ ' + esc(profile['이름'] || '사용자') + ' 님 추천 결과</h2>' +
-    '<div class="badges"><span class="result-badge">' + esc(alStr) + '</span>' +
-    (blStr ? '<span class="result-badge">' + esc(blStr) + '</span>' : '') + '</div>';
-
-  const cont = document.getElementById('resultCards');
-  cont.innerHTML = '';
-  const cls = { '아침': 'bk', '점심': 'ln', '저녁': 'dn' };
-
-  dayList.forEach(function(day, idx) {
-    if (!(day in parsed)) return;
-    const card = document.createElement('div');
-    card.className = 'day-card';
-    card.style.animationDelay = (idx * 60) + 'ms';
-    let rows = '';
-    for (const meal of ['아침','점심','저녁']) {
-      const info = parsed[day] && parsed[day][meal];
-      if (!info) continue;
-      const isOk = (info.yn || '').toUpperCase() === 'O';
-      const co = (info.course || '').trim();
-      const showC = isOk && co && !['해당없음', '-', '', '없음'].includes(co);
-      rows +=
-        '<div class="meal-row">' +
-          '<div class="meal-time-badge ' + cls[meal] + '">' + esc(meal) + '</div>' +
-          '<div class="meal-content">' +
-            (isOk
-              ? '<div class="meal-status-ok">✔ 추천' + (showC ? '<span class="course-badge">' + esc(co) + '</span>' : '') + '</div>'
-              : '<div class="meal-status-ng">✘ 제외</div>') +
-            '<div class="meal-menu' + (isOk ? '' : ' ng') + '">' + esc(info.menu) + '</div>' +
-            '<div class="meal-reason">' + esc(info.reason) + '</div>' +
-          '</div>' +
-        '</div>';
+    function esc(s) {
+      return String(s ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     }
-    card.innerHTML = '<div class="day-header">' + esc(day) + '</div>' + rows;
-    cont.appendChild(card);
-  });
 
-  document.getElementById('resultSection').classList.add('show');
-  document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
+    function handleDragOver(e) {
+      e.preventDefault();
+    }
+    function handleDragLeave() {
+    }
+    function handleDrop(e) {
+      e.preventDefault();
+    }
+    function handleFileSelect(e) {
+      if (e.target.files[0]) pf(e.target.files[0]);
+    }
 
-// ================================================================
-// 메인 실행 함수
-// ================================================================
-async function run() {
-  clearErr();
-  document.getElementById('debugBox').textContent = '';
-  document.getElementById('debugBox').classList.remove('show');
+    function pf(file) {
+      if (!file.type.startsWith('image/')) {
+        showErr('이미지 파일만 업로드할 수 있어요.');
+        return;
+      }
+      mime = file.type;
+      const r = new FileReader();
+      r.onload = ev => {
+        b64 = ev.target.result.split(',')[1];
+      };
+      r.readAsDataURL(file);
+    }
 
-  if (!b64) { showErr('식단표 이미지를 먼저 업로드해주세요.'); return; }
-
-  const profile = {
-    '이름': document.getElementById('userName').value.trim(),
-    '좋아하는_종류': gc('likedTypes'),
-    '좋아하는_국가': gc('likedCuisines'),
-    '싫어하는_재료': document.getElementById('disliked').value.split(',').map(function(s) { return s.trim(); }).filter(Boolean),
-    '알레르기': gc('allergies'),
-    '먹을수없는_시간대': gc('blockedTimes')
-  };
-
-  try {
-    // Step 1: 이미지 → JSON
-    setLoad(true, '식단표 이미지 분석 중...', 'Gemini Vision 분석 중 (20~30초 소요)');
-    const rawJson = await gasCall('clientParseMenuImage', b64, mime);
-    const weeklyMenu = exJson(rawJson);
-    dbg('📋 파싱된 식단: ', weeklyMenu);
-
-    // Step 2: 알레르기/시간표 필터
-    setLoad(true, '맞춤 추천 생성 중...', (profile['이름'] || '사용자') + ' 님의 프로필 기반 분석 중');
-    const candidates = buildCandidates(weeklyMenu, profile);
-
-    // Step 3: AI 추천
-    setLoad(true, 'AI 추천 결과 생성 중...', 'Gemini 분석 중 (20~30초 소요)');
-    const rawResult = await gasCall('clientGetRecommendation', candidates, profile);
-    dbg('📝 추천 원문: ', rawResult);
-
-    setLoad(false);
-    const parsed = parseResult(rawResult);
-    renderResults(parsed, profile, Object.keys(weeklyMenu));
-
-  } catch (err) {
-    setLoad(false);
-    showErr(err.message);
-    console.error(err);
-  }
-}
-</script>
+    function run() {
+      clearErr();
+      document.getElementById('debugBox').textContent = '';
+      document.getElementById('debugBox').classList.remove('show');
+      showErr('현재 페이지는 preference.html로 재구성된 상태입니다. 기존의 식단표 업로드 기능은 제거되었습니다.');
+    }
+  </script>
 </body>
 </html>
