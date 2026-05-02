@@ -65,7 +65,7 @@
       border-radius: 12px;
       border: 2px solid #f6c90e;
       padding: 18px 20px;
-      margin-bottom: 14px;
+      margin-bottom: 24px;
     }
     .recommend-header {
       font-size: 16px;
@@ -105,7 +105,7 @@
       border-radius: 12px;
       border: 1.5px solid #ddd;
       padding: 18px 20px;
-      margin-bottom: 14px;
+      margin-bottom: 24px;
     }
     .meal-header {
       display: flex;
@@ -126,7 +126,7 @@
       border-radius: 12px;
       border: 1.5px solid #ddd;
       padding: 18px 20px;
-      margin-bottom: 14px;
+      margin-bottom: 24px;
     }
     .pref-section-header {
       display: flex;
@@ -299,8 +299,9 @@
       // 선호도 기반 추천 (임시: 추후 서버 연결)
       const firstMeal = sorted[0];
       recommendEl.innerHTML = `
-        <div class="meal-items">${firstMeal.items.replace(/\n/g, '<br>')}</div>
-      `;
+  <div style="font-size:14px; color:#888; margin-bottom:8px;">${firstMeal.emoji} ${firstMeal.title} ${firstMeal.time}</div>
+  <div class="meal-items">${firstMeal.items.replace(/\n/g, '<br>')}</div>
+`;
     }
 
     // 내 메뉴 선호도 섹션
