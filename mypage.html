@@ -165,12 +165,16 @@
 
   <!-- 임시 모달 -->
   <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
-    <div class="modal">
-      <h3 id="modal-title">피드백 전송</h3>
-      <p>해당 기능은 추후 연결 예정입니다.</p>
-      <button class="modal-btn" onclick="closeModal()">확인</button>
+  <div class="modal">
+    <h3>피드백 전송</h3>
+    <p>불편한 점이나 개선 사항을 알려주세요.</p>
+    <textarea id="feedback-text" placeholder="내용을 입력해주세요." style="width:100%; height:120px; padding:10px; border:1.5px solid #ddd; border-radius:8px; font-size:14px; resize:none; outline:none; font-family:inherit;"></textarea>
+    <div class="modal-btns" style="margin-top:12px;">
+      <button class="modal-btn" onclick="closeModal()">취소</button>
+      <button class="modal-btn confirm" onclick="sendFeedback()">전송</button>
     </div>
   </div>
+</div>
 
   <script>
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -218,6 +222,14 @@
 
     function closeModalOutside(e) {
       if (e.target === document.getElementById('modal-overlay')) closeModal();
+    }
+
+    function sendFeedback() {
+      const text = document.getElementById('feedback-text').value.trim();
+      if (!text) { alert('내용을 입력해주세요.'); return; }
+      alert('피드백이 전송되었습니다. 감사합니다!');
+      document.getElementById('feedback-text').value = '';
+      closeModal();
     }
   </script>
 </body>
