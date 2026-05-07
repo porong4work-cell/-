@@ -80,7 +80,6 @@
     }
     .btn:active { background: #f0f0f0; }
 
-    /* 모달 */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -90,27 +89,66 @@
       z-index: 100;
       align-items: center;
       justify-content: center;
+      padding: 24px;
     }
     .modal-overlay.show { display: flex; }
     .modal {
       background: #fff;
       border-radius: 16px;
       padding: 28px 24px;
-      width: 85%;
+      width: 100%;
+      max-width: 420px;
       text-align: center;
     }
     .modal h3 { font-size: 18px; font-weight: 500; margin-bottom: 10px; }
     .modal p { font-size: 14px; color: #888; margin-bottom: 24px; }
-    .modal-btn {
+
+    .modal textarea {
       width: 100%;
+      height: 120px;
+      padding: 10px;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .modal-btns {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .modal-btn {
+      flex: 1;
       padding: 12px;
       border: 1.5px solid #111;
       border-radius: 8px;
-      background: #fff;
       font-size: 15px;
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
-    .modal-btn:active { background: #f0f0f0; }
+
+    .modal-btn.cancel {
+      background: #fff;
+      color: #111;
+    }
+
+    .modal-btn.confirm {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
+    .modal-btn.cancel:active {
+      background: #f0f0f0;
+    }
+
+    .modal-btn.confirm:active {
+      background: #000;
+    }
   </style>
 </head>
 <body>
@@ -124,13 +162,11 @@
     </button>
   </div>
 
-  <!-- 로그인 전 프로필 -->
   <div class="profile" id="profile-guest" style="display:none;">
     <div class="profile-circle"></div>
     <div class="profile-info">로그인 후 이용해주세요.</div>
   </div>
 
-  <!-- 로그인 후 프로필 -->
   <div class="profile" id="profile-user" style="display:none;">
     <div class="profile-circle"></div>
     <div class="profile-info">
@@ -139,7 +175,6 @@
     </div>
   </div>
 
-  <!-- 메뉴 -->
   <div class="menu-list">
     <div class="menu-item" id="menu-timetable" onclick="handleMenu('timetable.html')">
       시간표 수정
@@ -152,29 +187,26 @@
     <div class="menu-item" onclick="openModal()">피드백 전송</div>
   </div>
 
-  <!-- 로그인 전 버튼 -->
   <div class="bottom-area" id="btn-guest" style="display:none;">
     <button class="btn" onclick="location.href='login.html'">로그인</button>
     <button class="btn" onclick="location.href='login.html'">회원가입</button>
   </div>
 
-  <!-- 로그인 후 버튼 -->
   <div class="bottom-area" id="btn-user" style="display:none;">
     <button class="btn" onclick="logout()">로그아웃</button>
   </div>
 
-  <!-- 임시 모달 -->
   <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
-  <div class="modal">
-    <h3>피드백 전송</h3>
-    <p>불편한 점이나 개선 사항을 알려주세요.</p>
-    <textarea id="feedback-text" placeholder="내용을 입력해주세요." style="width:100%; height:120px; padding:10px; border:1.5px solid #ddd; border-radius:8px; font-size:14px; resize:none; outline:none; font-family:inherit;"></textarea>
-    <div class="modal-btns" style="margin-top:12px;">
-      <button class="modal-btn" onclick="closeModal()">취소</button>
-      <button class="modal-btn confirm" onclick="sendFeedback()">전송</button>
+    <div class="modal">
+      <h3>피드백 전송</h3>
+      <p>불편한 점이나 개선 사항을 알려주세요.</p>
+      <textarea id="feedback-text" placeholder="내용을 입력해주세요."></textarea>
+      <div class="modal-btns">
+        <button class="modal-btn cancel" onclick="closeModal()">취소</button>
+        <button class="modal-btn confirm" onclick="sendFeedback()">전송</button>
+      </div>
     </div>
   </div>
-</div>
 
   <script>
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -226,7 +258,10 @@
 
     function sendFeedback() {
       const text = document.getElementById('feedback-text').value.trim();
-      if (!text) { alert('내용을 입력해주세요.'); return; }
+      if (!text) {
+        alert('내용을 입력해주세요.');
+        return;
+      }
       alert('피드백이 전송되었습니다. 감사합니다!');
       document.getElementById('feedback-text').value = '';
       closeModal();
