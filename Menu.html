@@ -157,6 +157,51 @@
     }
     .modal-overlay.show { display: flex; }
     .modal { background: #fff; border-radius: 16px; padding: 28px 24px; width: 88%; }
+    /* 업로드 탭 */
+    .upload-tabs {
+      display: flex;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1.5px solid #ddd;
+      margin-bottom: 16px;
+    }
+    .upload-tab {
+      flex: 1;
+      padding: 11px 0;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      background: #fff;
+      color: #888;
+      border: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .upload-tab.active {
+      background: #3182ce;
+      color: #fff;
+    }
+    .upload-tab:first-child { border-right: 1px solid #ddd; }
+
+    /* 업로드 패널 */
+    .upload-panel { display: none; }
+    .upload-panel.active { display: block; }
+
+    /* CSV 업로드 영역 */
+    .csv-area {
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      padding: 32px 16px;
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .csv-area.has-file { border-color: #2e7d32; }
+    .csv-icon { font-size: 36px; margin-bottom: 8px; }
+    .csv-text { font-size: 14px; color: #888; }
+    .csv-filename { font-size: 12px; color: #aaa; margin-top: 4px; }
+    .csv-area.has-file .csv-text { color: #2e7d32; font-weight: 500; }
+    
     .modal h3 { font-size: 18px; font-weight: 500; margin-bottom: 8px; }
     .modal p { font-size: 13px; color: #888; margin-bottom: 20px; }
     .upload-area {
@@ -248,22 +293,44 @@
   </div>
 
   <!-- 업로드 모달 -->
-  <div class="modal-overlay" id="upload-modal" onclick="closeModalOutside(event)">
-    <div class="modal">
-      <h3>주간 메뉴 업로드</h3>
-      <p>메뉴 이미지를 업로드하면 자동으로 식단이 분석됩니다. (추후 연결 예정)</p>
+<div class="modal-overlay" id="upload-modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <h3>주간 메뉴 업로드</h3>
+    <p>식단표 이미지를 업로드하거나 크롤링 CSV 파일을 사용하세요</p>
+
+    <!-- 탭 -->
+    <div class="upload-tabs">
+      <button class="upload-tab active" id="tab-image" onclick="switchUploadTab('image')">📷 이미지 업로드</button>
+      <button class="upload-tab" id="tab-csv" onclick="switchUploadTab('csv')">📄 CSV 파일 (크롤링)</button>
+    </div>
+
+    <!-- 이미지 패널 -->
+    <div class="upload-panel active" id="panel-image">
       <div class="upload-area" id="upload-area" onclick="triggerFileInput()">
-        <div class="upload-icon">📷</div>
-        <div class="upload-text">이미지를 탭하여 업로드</div>
+        <div class="upload-icon">🖼️</div>
+        <div class="upload-text">식단표 이미지를 클릭해서 선택</div>
+        <div class="upload-text" style="font-size:12px;color:#aaa;margin-top:4px;">PNG · JPG · WEBP 지원</div>
         <img id="preview-img" src="" alt="미리보기" />
       </div>
-      <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleFile(event)" />
-      <div class="modal-btns">
-        <button class="modal-btn" onclick="closeUploadModal()">취소</button>
-        <button class="modal-btn confirm" id="confirm-btn" disabled onclick="confirmUpload()">업로드</button>
+      <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleImageFile(event)" />
+    </div>
+
+    <!-- CSV 패널 -->
+    <div class="upload-panel" id="panel-csv">
+      <div class="csv-area" id="csv-area" onclick="triggerCsvInput()">
+        <div class="csv-icon">📄</div>
+        <div class="csv-text" id="csv-text">CSV 파일을 클릭해서 선택</div>
+        <div class="csv-filename" id="csv-filename">inha_staff_menu_playwright.csv</div>
       </div>
+      <input type="file" id="csv-input" accept=".csv" style="display:none;" onchange="handleCsvFile(event)" />
+    </div>
+
+    <div class="modal-btns">
+      <button class="modal-btn" onclick="closeUploadModal()">취소</button>
+      <button class="modal-btn confirm" id="confirm-btn" disabled onclick="confirmUpload()">업로드</button>
     </div>
   </div>
+</div>
 
   <script>
     // 날짜
@@ -397,37 +464,72 @@
       if (!e.target.closest('.header-right')) {
         document.getElementById('dropdown').classList.remove('show');
       }
-    });
-
+    }); 
     // 업로드 모달
-    function openUploadModal() {
-      document.getElementById('dropdown').classList.remove('show');
-      document.getElementById('upload-modal').classList.add('show');
-    }
-    function closeUploadModal() {
-      document.getElementById('upload-modal').classList.remove('show');
-      document.getElementById('upload-area').classList.remove('has-image');
-      document.getElementById('preview-img').src = '';
-      document.getElementById('file-input').value = '';
-      document.getElementById('confirm-btn').disabled = true;
-    }
-    function closeModalOutside(e) { if (e.target === document.getElementById('upload-modal')) closeUploadModal(); }
-    function triggerFileInput() { document.getElementById('file-input').click(); }
-    function handleFile(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
-        document.getElementById('preview-img').src = ev.target.result;
-        document.getElementById('upload-area').classList.add('has-image');
-        document.getElementById('confirm-btn').disabled = false;
-      };
-      reader.readAsDataURL(file);
-    }
-    function confirmUpload() {
-      alert('업로드 완료! 메뉴 자동 분석 기능은 추후 연결 예정입니다.');
-      closeUploadModal();
-    }
+let currentUploadTab = 'image';
+
+function openUploadModal() {
+  document.getElementById('dropdown').classList.remove('show');
+  document.getElementById('upload-modal').classList.add('show');
+}
+function closeUploadModal() {
+  document.getElementById('upload-modal').classList.remove('show');
+  // 이미지 초기화
+  document.getElementById('upload-area').classList.remove('has-image');
+  document.getElementById('preview-img').src = '';
+  document.getElementById('file-input').value = '';
+  // CSV 초기화
+  document.getElementById('csv-area').classList.remove('has-file');
+  document.getElementById('csv-text').textContent = 'CSV 파일을 클릭해서 선택';
+  document.getElementById('csv-filename').textContent = 'inha_staff_menu_playwright.csv';
+  document.getElementById('csv-input').value = '';
+  // 탭 초기화
+  switchUploadTab('image');
+  document.getElementById('confirm-btn').disabled = true;
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('upload-modal')) closeUploadModal();
+}
+
+function switchUploadTab(tab) {
+  currentUploadTab = tab;
+  document.getElementById('tab-image').classList.toggle('active', tab === 'image');
+  document.getElementById('tab-csv').classList.toggle('active', tab === 'csv');
+  document.getElementById('panel-image').classList.toggle('active', tab === 'image');
+  document.getElementById('panel-csv').classList.toggle('active', tab === 'csv');
+  document.getElementById('confirm-btn').disabled = true;
+}
+
+function triggerFileInput() { document.getElementById('file-input').click(); }
+function handleImageFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('preview-img').src = ev.target.result;
+    document.getElementById('upload-area').classList.add('has-image');
+    document.getElementById('confirm-btn').disabled = false;
+  };
+  reader.readAsDataURL(file);
+}
+
+function triggerCsvInput() { document.getElementById('csv-input').click(); }
+function handleCsvFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById('csv-area').classList.add('has-file');
+  document.getElementById('csv-text').textContent = file.name;
+  document.getElementById('csv-filename').textContent = Math.round(file.size / 1024) + ' KB';
+  document.getElementById('confirm-btn').disabled = false;
+}
+
+function confirmUpload() {
+  const msg = currentUploadTab === 'image'
+    ? '이미지 업로드 완료! 메뉴 자동 분석 기능은 추후 연결 예정입니다.'
+    : 'CSV 파일 업로드 완료! 크롤링 데이터 연동 기능은 추후 연결 예정입니다.';
+  alert(msg);
+  closeUploadModal();
+}
   </script>
 </body>
 </html>
